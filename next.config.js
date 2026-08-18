@@ -37,19 +37,19 @@ const nextConfig = {
     };
 
     return [
-      // ── Statik sahifalar (darvoza `/` shu yerda: hammaga bir xil) ──
+      // ── Statik sahifalar (asosiy landing `/` shu yerda: hammaga bir xil) ──
+      // Darvoza olib tashlangach `/l` ham shu qatorga qo'shildi: u endi `gt`
+      // cookie'siga bog'liq emas, ya'ni edge'da bemalol cache'lanadi.
       { source: '/', headers: [publicCache] },
-      { source: '/:path((?!api/|admin/|l$|l/|_next/).*)', headers: [publicCache] },
+      { source: '/:path((?!api/|admin/|_next/).*)', headers: [publicCache] },
 
-      // ── Landing: darvoza ortida ──
-      // CDN'da cache'lansa `gt` cookie'siz ham berilib ketardi — shuning uchun
-      // no-store. Sahifa baribir prerender qilingan, Node uni diskdan beradi.
+      // ── A/B variantlari qidiruvga chiqmasin ──
+      // Har bir variantda `robots: noindex` metadata'si ham bor; bu sarlavha
+      // ikkinchi qavat — metadata unutilsa ham sahifa indekslanmaydi.
+      // Asosiy landing (`/`) bu ro'yxatga KIRMAYDI: u indekslanishi kerak.
       {
-        source: '/l',
-        headers: [
-          { key: 'Cache-Control', value: 'private, no-store, max-age=0' },
-          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
-        ],
+        source: '/:path(l|[1-9])',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
       },
 
       // ── Immutable build assetlari ──

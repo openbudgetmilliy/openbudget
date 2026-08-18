@@ -1,0 +1,37 @@
+/* Fon tekshiruvi uyasi.
+
+   Odatda BO'SH: `interaction-only` rejimida Turnstile hech narsa chizmaydi
+   va `:empty` butun blokni yashiradi — sahifada uning izi ham qolmaydi.
+
+   Cloudflare haqiqatan odam aralashuvini so'ragandagina ichiga iframe
+   qo'yiladi; shunda blok pastki chap burchakda kichik karta bo'lib chiqadi.
+   Chap burchak tanlangan — o'ng pastda variant almashtirgichi turadi. */
+
+/* MUHIM: bu blokda SOYA yo'q.
+
+   Ko'rinmas rejimda Turnstile uyaga 0×0 o'lchamli iframe qo'yadi — element
+   bo'sh emas, ya'ni `:empty` uni yashira olmaydi, lekin o'lchami nol.
+   `box-shadow` esa elementning TASHQARISIGA chiziladi va nol o'lchamda ham
+   burchakda dog' qoldirishi mumkin edi. Katakcha haqiqatan ko'rsatilganda
+   Turnstile o'zining oq ramkasini chizadi — bizga qo'shimcha bezak kerak
+   emas. */
+
+.slot {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 50;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.slot:empty {
+  display: none;
+}
+
+@media (max-width: 560px) {
+  .slot {
+    left: 10px;
+    bottom: 10px;
+  }
+}

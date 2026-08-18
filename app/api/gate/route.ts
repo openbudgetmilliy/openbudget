@@ -10,8 +10,12 @@ const LIMIT = 20;
 const WINDOW = 10 * 60;
 
 /**
- * Kirish darvozasi: Turnstile tokenini tekshiradi va `gt` cookie'sini beradi.
- * Muvaffaqiyatli javobdan keyin brauzer `/l` ga o'tishi mumkin.
+ * Turnstile tokenini tekshiradi va `gt` cookie'sini beradi.
+ *
+ * Ilgari bu kirish darvozasi edi — cookie'siz `/l` ga o'tib bo'lmasdi.
+ * Endi tekshiruv asosiy sahifada FONDA ishlaydi (`BackgroundGate`) va hech
+ * qayerga kirishni to'smaydi: bu endpoint bot signalini yozib qo'yadi,
+ * rate-limit va Turnstile tasdig'i esa ilgarigidek joyida.
  */
 export async function POST(req: Request): Promise<Response> {
   // Kalitlar qo'yilmagan bo'lsa darvoza umuman yo'q — cookie ham kerak emas.

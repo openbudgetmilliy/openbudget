@@ -41,17 +41,26 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
 /**
  * Landing'ni to'liq yangilash: ISR + CF edge.
  *
- * Narxlar `/l` da, shu sabab ISR o'sha yo'l uchun bekor qilinadi. `/l` CF'da
- * cache'lanmaydi (`no-store`), lekin darvoza `/` va sitemap cache'lanadi —
- * ular purge ro'yxatida qoladi.
+ * Narx BARCHA sahifalarda ko'rinadi — asosiy `/` da ham, `/l` da ham,
+ * `/1`–`/9` A/B variantlarida ham. Hammasi bitta `getSettings()` manbasidan
+ * o'qiydi, shuning uchun narx o'zgarganda hammasining ISR keshi bekor
+ * qilinadi va CF edge'dan purge qilinadi.
+ *
+ * Ilgari bu yerda faqat `/l` va `/` bor edi: qolgan variantlar `revalidate:
+ * 60` bilan bir daqiqada o'zini yangilardi. Endi asosiy sahifa ham shu
+ * ro'yxatda va u DARHOL yangilanishi kerak — narx eski qolgan bosh sahifa
+ * eng qimmatga tushadigan xato.
  */
+const LANDING_PATHS = ['/', '/l', '/1', '/2', '/3', '/4', '/5', '/6', '/7', '/8', '/9'];
+
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
-  revalidatePath('/l');
-  revalidatePath('/');
+  for (const path of LANDING_PATHS) revalidatePath(path);
+
   const cf = await purgeCloudflare([
-    `${env.SITE_URL}/`,
+    // Ildiz ikki ko'rinishda ham purge qilinadi — CF ularni alohida
+    // kalit sifatida saqlashi mumkin
     `${env.SITE_URL}`,
-    `${env.SITE_URL}/l`,
+    ...LANDING_PATHS.map((path) => `${env.SITE_URL}${path}`),
     `${env.SITE_URL}/sitemap.xml`,
   ]);
   return { isr: true, cf };

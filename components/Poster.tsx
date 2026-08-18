@@ -5,16 +5,11 @@ import { SITE, applyVars, titleLines } from '@/lib/content';
 import type { Settings } from '@/lib/data';
 
 /**
- * Plakat — saytdagi YAGONA kompozitsiya.
+ * Plakat — dastlabki landing kompozitsiyasi (`/l`, almashtirgichda «asl»).
  *
- * Darvoza (`/`) va landing (`/l`) shu bitta komponentdan quriladi va faqat
- * bitta joyi bilan farq qiladi: `action` uyasi. Darvozada u jarayon chizig'i,
- * landingda esa botga o'tish tugmasi.
- *
- * Nega shunday: darvoza tekshiruvi bir necha soniya oladi va bu vaqtni bo'sh
- * kutish ekranida o'tkazish — yo'qotilgan vaqt. Ikkala sahifa bir xil
- * ko'ringanda foydalanuvchi tekshiruv paytida narxni allaqachon o'qiydi, o'tish
- * esa sezilmaydi: joyida faqat chiziq tugmaga almashadi.
+ * Ilgari bu komponent ikki joyda ishlatilardi: kirish darvozasi (`/`) va
+ * landing. Darvoza olib tashlangach (tekshiruv endi fonda) faqat `/l`
+ * qoldi, `action` uyasi esa botga o'tish tugmasini oladi.
  */
 export default function Poster({
   s,

@@ -1,6 +1,9 @@
 /**
  * Turnstile kalitlarini tekshirish:  npm run gate:check
  *
+ * Kalitlar fon tekshiruvida ishlatiladi (`components/BackgroundGate.tsx`) —
+ * ular noto'g'ri bo'lsa sahifa ochilaveradi, lekin bot signali yig'ilmaydi.
+ *
  * Hiyla: siteverify'ga ATAYIN soxta token yuboramiz va JAVOB TURIGA qaraymiz —
  *   invalid-input-secret    → secret NOTO'G'RI
  *   invalid-input-response  → secret TO'G'RI (faqat token soxta, tabiiy)
