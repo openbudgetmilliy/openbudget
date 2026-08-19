@@ -100,8 +100,8 @@ export default function Oltin({ s }: { s: Settings }) {
           <p className={st.badge}>FAOL OVOZ BERISH</p>
           <h1 className={st.h1}>Ovoz bering, pul oling</h1>
           <p className={st.sub}>
-            Har bir ovoz uchun {PAYOUT} so‘m oling — mahallangizdagi suv, yo‘l va qurilishga
-            hissa qo‘shing.
+            Har bir ovoz uchun <b className={st.subSum}>{PAYOUT} so‘m</b> oling — mahallangizdagi
+            suv, yo‘l va qurilishga hissa qo‘shing.
           </p>
         </div>
 

@@ -138,12 +138,46 @@
   color: var(--ink);
 }
 
+/* Kenglik 290px edi. Summa kattalashgach jumla eng tor telefonda (375×667)
+   uch qatordan to'rtga o'tib, «skroll yo'q» qoidasini buzardi — u yerda
+   zaxira atigi 2px. 330px da jumla hamma o'lchamda yana uch qatorga
+   qaytadi, ya'ni tavsif AVVALGIDAN past bo'lib qoladi. Kattaroq qiymat
+   kerak emas: 393px ekranda ustunning o'zi 350px. */
 .sub {
   margin-top: 12px;
-  max-width: 290px;
+  max-width: 330px;
   font-size: clamp(1.0625rem, 5.1vw, 1.25rem);
   line-height: 1.4;
   color: var(--ink-2);
+}
+
+/* ── Narx — jumladagi yagona urg'u ──
+   Oltin rang dizaynning 2-qoidasi bo'yicha faqat harakat va urg'uga
+   tegishli; summa aynan shu sababdan oltin, xira kulrang matn ichida.
+
+   `line-height: 1` MAJBURIY. Unsiz kattalashgan matn o'z qator qutisini
+   ham cho'zib, butun tavsifni pastga surardi — «bitta ekran, skroll yo'q»
+   qoidasi esa eng tor telefonda (375×667) atigi 2px zaxira bilan turadi.
+
+   `white-space: nowrap` — «20 000» va «so'm» ikki qatorga bo'linib
+   qolmasin: summa bir butun o'qilishi kerak. */
+.subSum {
+  font-size: 1.3em;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--gold);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 320px ekranda ustun atigi 280px: `max-width: 330px` u yerda kuchga
+   kirmaydi va kattalashgan summa jumlani to'rtinchi qatorga uzardi.
+   Urg'u biroz kichrayadi — summa baribir matndan ajralib turadi, lekin
+   sahifa ortiqcha uzunlashmaydi. */
+@media (max-width: 340px) {
+  .subSum {
+    font-size: 1.15em;
+  }
 }
 
 /* ── Cho'zuvchi: ortiqcha balandlikni bo'lib oladi ── */
