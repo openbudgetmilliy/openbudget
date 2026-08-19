@@ -17,9 +17,13 @@
    emas. */
 
 .slot {
+  /* Chekkadan masofa BITTA o'zgaruvchida: mobil qoida faqat shuni
+     o'zgartiradi va `.slotTop` dagi `bottom: auto` ni bosib ketmaydi */
+  --edge: 16px;
+
   position: fixed;
-  left: 16px;
-  bottom: 16px;
+  left: var(--edge);
+  bottom: var(--edge);
   z-index: 50;
   border-radius: 8px;
   overflow: hidden;
@@ -29,9 +33,23 @@
   display: none;
 }
 
+/* Bitta ekranli sahifalarda (asosiy «Oltin» ekrani) pastki burchakda CTA
+   tugmalari turadi — 300×73 katakcha ularni to'g'ridan-to'g'ri yopib
+   qo'yardi. Bu yerda u tepaga chiqadi: brend qatorini vaqtincha yopadi,
+   lekin harakat tugmasiga tegmaydi.
+   Qoida `.slot` DAN KEYIN turadi — teng spetsifiklikda oxirgisi yutadi.
+
+   `bottom: auto` MAJBURIY: `top` va `bottom` birga berilsa, balandligi
+   `auto` bo'lgan `fixed` blok ikkisi orasiga CHO'ZILADI — ko'rinmas rejimda
+   (0×0 iframe) u butun ekranni qoplab, CTA tugmalarining bosilishini
+   to'sib qo'yardi. */
+.slotTop {
+  top: var(--edge);
+  bottom: auto;
+}
+
 @media (max-width: 560px) {
   .slot {
-    left: 10px;
-    bottom: 10px;
+    --edge: 10px;
   }
 }

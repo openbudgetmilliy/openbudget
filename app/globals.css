@@ -502,6 +502,27 @@ button {
   }
 }
 
+/* ── To'q hujjat: asosiy sahifa ──────────────────────────────────────────
+   `body` yorug' plakat uchun och kulrang. Asosiy sahifa («Oltin» ekrani,
+   `components/landing/Oltin.tsx`) esa to'q ko'k — iOS'da rezina skroll
+   paytida pastdan oq chiziq ochilib qolardi.
+
+   `:has()` shu bitta sahifada hujjat rangini ham to'q qiladi. Uni
+   tanimaydigan eski brauzerda faqat o'sha chekka chiziq yorug' qoladi —
+   sahifaning o'zi baribir to'g'ri chiziladi.
+
+   `html:root` — yuqoridagi `:root { color-scheme: light }` dan kuchliroq
+   bo'lishi uchun; aks holda skroll paneli oq bo'lib qolardi. */
+
+html:root:has(.oltin-dark) {
+  background: #222c3f;
+  color-scheme: dark;
+}
+
+body:has(.oltin-dark) {
+  background: #222c3f;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

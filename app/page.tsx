@@ -1,4 +1,6 @@
-import Aurora from '@/components/landing/Aurora';
+import type { Viewport } from 'next';
+
+import Oltin from '@/components/landing/Oltin';
 import BackgroundGate from '@/components/BackgroundGate';
 
 import { getSettings } from '@/lib/data';
@@ -17,7 +19,9 @@ import { env, GATE_ON } from '@/lib/env';
  * qimmat joy. Tekshiruvning o'zi (`/api/gate`, rate-limit, `gt` cookie)
  * saqlanib qoldi, faqat u endi kirishni to'smaydi.
  *
- * Razmetka `components/landing/Aurora.tsx` da — `/3` bilan bitta manba.
+ * Razmetka `components/landing/Oltin.tsx` da — dizayn kanvasidan («Oltin»
+ * ekrani) ko'chirilgan bitta ekranli kompozitsiya. Undan oldin bu yerda
+ * `Aurora` turardi; u `/3` da qoldi.
  *
  * To'liq statik (SSG): Cloudflare edge'da cache'lanadi, narx o'zgarganda
  * `lib/cf.ts` uni purge qiladi.
@@ -25,15 +29,28 @@ import { env, GATE_ON } from '@/lib/env';
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
+/**
+ * Sahifa to'q — brauzer paneli ham to'q bo'lsin.
+ *
+ * Root layout'dagi qiymat («oq», yorug' plakat uchun) faqat SHU marshrutda
+ * almashadi; qolgan sahifalar (`/l`, `/1`–`/9`, admin) tegmaydi.
+ */
+export const viewport: Viewport = {
+  themeColor: '#222c3f',
+  colorScheme: 'dark',
+};
+
 export default async function Home() {
   const s = await getSettings();
 
   return (
     <>
-      <Aurora s={s} prefix="main" />
+      <Oltin s={s} />
 
       {/* Kalitlar qo'yilmagan bo'lsa (`GATE_ON` false) — umuman chiqmaydi */}
-      <BackgroundGate siteKey={GATE_ON ? env.TURNSTILE_SITE_KEY : ''} />
+      {/* `corner="top"` — bu sahifa bitta ekran: pastda CTA tugmalari
+          turadi, katakcha ularni yopib qo'ymasligi kerak */}
+      <BackgroundGate siteKey={GATE_ON ? env.TURNSTILE_SITE_KEY : ''} corner="top" />
 
       {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}
       <script

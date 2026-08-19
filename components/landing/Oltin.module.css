@@ -1,0 +1,251 @@
+/* ==========================================================================
+   «Oltin» — asosiy sahifa ekrani
+
+   Manba: dizayn kanvasi (`Main.dc.html`, 393×852) va uning brauzer nusxasi
+   (`open-budjet-8-oltin.html`). O'lchamlar shu artborddan olingan; ekran
+   torroq/kengroq bo'lsa `clamp()` ular orasida siljiydi.
+
+   Uch qoida:
+
+   1. USTUN — TELEFON KENGLIGI. Maksimum 430px. Kengroq ekranda ustun
+      markazda qoladi, matn cho'zilmaydi: dizayn aynan shu qatorlar uzunligi
+      uchun terilgan.
+   2. BO'SH JOY — IKKI CHO'ZUVCHI. `.gap` lar butun ortiqcha balandlikni
+      bo'lib oladi. Baland ekranda kompozitsiya cho'ziladi, past ekranda esa
+      ular 14px gacha siqiladi va sahifa skroll bo'ladi (kesilmaydi).
+   3. RADIUS QO'LDA. `globals.css` da `* { border-radius: 0 }` — bu yerdagi
+      har bir yumaloq burchak ATAYIN yozilgan.
+
+   Kontrast (fon #222C3F): oq 13.2:1 · #C3C8D1 7.9:1 · oltin 6.7:1.
+   ========================================================================== */
+
+/* Hujjat foni ham to'q bo'lishi kerak (iOS rezina skrolli) — u `globals.css`
+   dagi `.oltin-dark` qoidasida, chunki CSS moduli faqat o'z klasslarini
+   e'lon qila oladi. Shu sabab ekran ildizida ikkala klass ham turadi. */
+
+.page {
+  --bg: #222c3f;
+  --gold: #d9b25c;
+  --gold-hi: #e8c979;
+  --gold-line: #6b6041;
+  --ink: #ffffff;
+  --ink-2: #c3c8d1;
+  --ink-3: #e9eaec;
+
+  /* 6.6vw — 393px lik artbordda aynan 26px beradi (dizayndagi qiymat), tor
+     telefonda esa asta kamayadi. Sarlavha qatorlari shu kenglikka qarab
+     uziladi: 26px da u manbadagidek «Ovoz bering, / pul oling» bo'ladi. */
+  --pad: clamp(18px, 6.6vw, 26px);
+  --f: var(--f-oltin), ui-sans-serif, system-ui, sans-serif;
+
+  min-height: 100svh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  color: var(--ink-2);
+  font-family: var(--f);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Fokus konturi — `globals.css` dagisi to'q ko'k, bu fonda ko'rinmaydi */
+.page :focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 3px;
+}
+
+.page ::selection {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+/* ── Ekran: telefon kengligidagi ustun ───────────────────────────────── */
+
+.screen {
+  position: relative;
+  /* Stacking konteksti: suv belgisi (`z-index: -1`) shu ekran ichida,
+     fon ustida, matn ostida qoladi */
+  z-index: 0;
+  overflow: hidden;
+  width: 100%;
+  max-width: 430px;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding: max(var(--pad), env(safe-area-inset-top)) var(--pad)
+    calc(var(--pad) + env(safe-area-inset-bottom));
+}
+
+.watermark {
+  position: absolute;
+  z-index: -1;
+  top: -90px;
+  right: -110px;
+  width: 420px;
+  height: 420px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+/* ── Header ── */
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.headMark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 7px;
+}
+
+.brand {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--ink-3);
+}
+
+/* ── Sarlavha bloki ── */
+
+.copy {
+  margin-top: 20px;
+}
+
+.badge {
+  display: inline-flex;
+  background: var(--gold);
+  color: var(--bg);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.05em;
+}
+
+/* 44px — artborddagi o'lcham (393px ekran). Tor telefonda 11.2vw bo'yicha
+   kichrayadi, 430px ustunda esa 44px da to'xtaydi: undan kattasi
+   «Ovoz bering,» qatorini uzib yuborardi. */
+.h1 {
+  margin-top: 14px;
+  font-size: clamp(2rem, 11.2vw, 2.75rem);
+  font-weight: 800;
+  line-height: 1.08;
+  color: var(--ink);
+}
+
+.sub {
+  margin-top: 12px;
+  max-width: 290px;
+  font-size: clamp(1.0625rem, 5.1vw, 1.25rem);
+  line-height: 1.4;
+  color: var(--ink-2);
+}
+
+/* ── Cho'zuvchi: ortiqcha balandlikni bo'lib oladi ── */
+
+.gap {
+  flex: 1 1 14px;
+  min-height: 14px;
+}
+
+/* ── Banknota ── */
+
+.money {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+/* ── Ishonch qatori ── */
+
+.trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.shield {
+  flex: none;
+}
+
+/* ── Tugmalar ── */
+
+.act {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Balandlik `min-height` — matn ikki qatorga tushsa tugma o'sadi,
+   yozuv kesilmaydi */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.btnP {
+  background: var(--gold);
+  color: var(--bg);
+}
+
+.btnP:hover {
+  background: var(--gold-hi);
+}
+
+.btnS {
+  color: var(--gold);
+  border: 1.5px solid var(--gold-line);
+}
+
+.btnS:hover {
+  background: rgba(217, 178, 92, 0.08);
+  border-color: var(--gold);
+}
+
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* ── Keng va baland ekran: artbordning o'zi ──────────────────────────────
+   Trafikning deyarli hammasi telefondan keladi. Kompyuterda esa ustun
+   cheksiz cho'zilib, kompozitsiya tarqab ketardi — shuning uchun u
+   manbadagidek (`open-budjet-8-oltin.html`) yumaloq kartaga aylanadi va
+   markazda turadi. Ikkala shart ham kerak: past (landshaft) ekranda karta
+   sig'masdi.
+   ---------------------------------------------------------------------- */
+
+@media (min-width: 560px) and (min-height: 920px) {
+  .page {
+    background: #0f1420;
+    padding: 24px 0;
+  }
+
+  .screen {
+    min-height: 852px;
+    border-radius: 28px;
+    background: var(--bg);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  }
+}

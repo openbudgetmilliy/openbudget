@@ -56,7 +56,20 @@ function alreadyVerified(): boolean {
  * cookie va uni beruvchi tekshiruv (rate-limit bilan) ilgarigidek qoladi,
  * faqat endi u kirishni to'smaydi.
  */
-export default function BackgroundGate({ siteKey }: { siteKey: string }) {
+export default function BackgroundGate({
+  siteKey,
+  corner = 'bottom',
+}: {
+  siteKey: string;
+  /**
+   * Katakcha ochilganda qaysi burchakda chiqsin.
+   *
+   * `bottom` — odatiy (uzun, skroll qilinadigan sahifalar).
+   * `top` — bitta ekranli sahifalar uchun: u yerda pastki burchakni CTA
+   *   tugmalari egallaydi va katakcha ularni yopib qo'yardi.
+   */
+  corner?: 'bottom' | 'top';
+}) {
   const boxRef = useRef<HTMLDivElement>(null);
   const widgetRef = useRef<string | null>(null);
   /** Bitta token bir marta yuborilsin — Cloudflare takrorini rad etadi */
@@ -133,5 +146,7 @@ export default function BackgroundGate({ siteKey }: { siteKey: string }) {
 
   // Uya odatda bo'sh — `:empty` uni yashiradi. Faqat Cloudflare katakcha
   // ko'rsatsa pastki burchakda paydo bo'ladi.
-  return <div className={c.slot} ref={boxRef} />;
+  return (
+    <div className={`${c.slot}${corner === 'top' ? ` ${c.slotTop}` : ''}`} ref={boxRef} />
+  );
 }

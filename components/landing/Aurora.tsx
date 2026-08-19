@@ -11,26 +11,23 @@ import { env } from '@/lib/env';
 import st from './Aurora.module.css';
 
 /**
- * «Aurora Premium» landing — saytning ASOSIY kompozitsiyasi.
+ * «Aurora Premium» landing — `/3` variantining kompozitsiyasi.
  *
  * Yorug' fintech-uslub: deyarli oq fon, hero ortida sekin oqadigan aurora
  * gradient, shisha (glassmorphism) kartalar va gradient aksentlar.
  *
- * Ikki joyda ishlatiladi va shuning uchun komponentga chiqarilgan:
- *   `/`   — domen ochilganda ko'rinadigan asosiy sahifa (almashtirgichsiz)
- *   `/3`  — A/B taqqoslash uchun o'sha dizaynning variant nusxasi
- *
- * Razmetka bitta joyda turishi shart: aks holda asosiy sahifa va variant
- * asta-sekin bir-biridan uzoqlashib, «/3 da tuzatdim, lekin saytda eski»
- * holati kelib chiqardi.
+ * Bir vaqtlar asosiy sahifa ham shu dizaynda edi, shuning uchun razmetka
+ * marshrutdan ajratilgan. Endi `/` dizayn kanvasidagi «Oltin» ekraniga
+ * o'tdi (`components/landing/Oltin.tsx`), bu esa `/3` da qoldi — eski
+ * dizayn A/B taqqoslash uchun yo'qolmasin.
  */
 
 type Props = {
   s: Settings;
   /**
-   * Analitika hodisalari prefiksi. Asosiy sahifa va variant bir xil
-   * dizaynda bo'lgani uchun ularni FAQAT shu prefiks ajratadi — busiz
-   * `/` va `/3` bosishlari bitta raqamga qo'shilib ketardi.
+   * Analitika hodisalari prefiksi (`v3_hero` kabi). Prop bo'lib qolgan:
+   * dizayn yana bir marshrutga qo'yilsa, bosishlar bitta raqamga
+   * qo'shilib ketmasin.
    */
   prefix: string;
   /** Variant almashtirgichi — faqat A/B sahifalarida, asosiy saytda yo'q */
