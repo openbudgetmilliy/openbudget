@@ -1,227 +1,165 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
-import Logo from '@/components/Logo';
 import Tracker from '@/components/Tracker';
-import VariantSections from '@/components/landing/VariantSections';
-import { Telegram, Check } from '@/components/Icons';
+import Logo from '@/components/Logo';
+import AdSwitcher from '@/components/landing/AdSwitcher';
 
 import { getSettings } from '@/lib/data';
-import { SITE, applyVars, titleLines } from '@/lib/content';
+import { SITE } from '@/lib/content';
+import { PAYOUT, PAYOUT_STEPS } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
+import a from '@/components/landing/adscreen.module.css';
 import c from './page.module.css';
 
 /**
- * Variant 4 — «Bento yorqin».
+ * Variant 4 — «Hisob» (dizayn kanvasidagi 15-ekran).
  *
- * Butun sahifa asimmetrik rangli mozaika: har mazmun bo'lagi o'z to'yingan
- * katagida yashaydi. Maqsad — A/B sinovda «tartibli o'yin» yo'nalishini
- * o'lchash: axborot zichligi yuqori, lekin har katak bitta gapni aytadi.
+ * Biz raqam aytmaymiz — odam o'zi hisoblaydi: nechta ovoz tanlasa, shuncha
+ * summani darhol ko'radi. Bosgan odam allaqachon «10 ta ovoz = 200 000»
+ * deb o'ylab qo'ygan bo'ladi.
  *
- * `/l` bilan bir xil qoidalar: SSG, so'rov paytida hech narsa hisoblanmaydi,
- * yagona client kod — Tracker.
+ * YAGONA INTERAKTIV VARIANT, JAVASCRIPT'SIZ. To'rt holat ham HTML'da
+ * oldindan chizilgan; qaysi biri ko'rinishini radio tugma va CSS'dagi
+ * `:checked ~` hal qiladi. Shuning uchun sahifa hech qanday client kod
+ * talab qilmaydi va `force-static` bo'lib qolaveradi.
+ *
+ * Nega `defaultChecked` (`checked` emas): React'da `checked` propi
+ * `onChange`siz boshqariladigan maydon deb qaraladi va foydalanuvchi
+ * tanlovini bloklardi. `defaultChecked` esa HTML'ga `checked` atributini
+ * yozadi-yu, keyin brauzerga to'liq erkinlik beradi.
+ *
+ * Summalar `lib/payout.ts` da bir marta hisoblanadi — asosiy sahifa bilan
+ * bitta manba.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
-/** A/B varianti — qidiruvga chiqmasligi shart, aks holda trafik buziladi */
+/** A/B varianti — qidiruvga chiqmasin, indeks faqat asosiy sahifada */
 export const metadata: Metadata = {
-  // Layout shablon `· brend` qo'shadi — brend bu yerda takrorlanmaydi
   title: 'Mukofot dasturi',
   robots: { index: false, follow: false },
 };
 
-export default async function VariantBento() {
-  const s = await getSettings();
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
-  const tg = tgLink(bot, 'web');
+export const viewport: Viewport = {
+  themeColor: '#f4f2ec',
+  colorScheme: 'light',
+};
 
-  const vars = { narx: s.price_one_vote };
-  const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
+export default async function VariantHisob() {
+  const s = await getSettings();
+  const tg = tgLink(s.bot_username || env.BOT, 'web');
 
   return (
-    <div className={c.page}>
-      {/* ── Header: oq, minimal — mozaika o'zi rang-barang, tepa jim tursin ── */}
-      <header className={c.hdr}>
-        <div className={c.hdrIn}>
-          <span className={c.brand}>
-            <Logo size={30} className={c.logoImg} />
+    <div className={`${a.screen} ${c.page} doc-paper`}>
+      <div className={c.bg} aria-hidden />
+
+      <div className={a.wrap}>
+        {/* Radiolar `.mid` DAN OLDIN turishi shart — CSS ularni
+            umumiy-birodar (`~`) selektori bilan topadi */}
+        {PAYOUT_STEPS.map((step, i) => (
+          <input
+            key={step.votes}
+            className={c.r}
+            type="radio"
+            name="hisob"
+            id={`hisob-${i}`}
+            defaultChecked={i === 0}
+            aria-label={`${step.votes} ta ovoz`}
+          />
+        ))}
+
+        <header className={a.head}>
+          <div className={c.brand}>
+            <span className={c.mark}>
+              <Logo size={21} className={c.markImg} />
+            </span>
             {SITE.brand}
-          </span>
-          <a href={tg} className={c.btnSm} data-t="cta" data-t-id="v4_header" data-tg rel="noopener">
-            <Telegram size={15} />
-            Botga o‘tish
-          </a>
+          </div>
+          <span className={c.tag}>Hisoblagich</span>
+        </header>
+
+        <div className={`${a.mid} ${c.mid}`}>
+          <p className={c.lab}>Siz olasiz</p>
+
+          <p className={c.disp}>
+            {PAYOUT_STEPS.map((step, i) => (
+              <span key={step.votes} className={`${c.num} ${c[`n${i}`]}`}>
+                {step.sum}
+              </span>
+            ))}
+            <span className={c.cur}>so‘m</span>
+          </p>
+
+          <p className={c.calc}>
+            <b>
+              {PAYOUT_STEPS.map((step, i) => (
+                <span key={step.votes} className={`${c.cnt} ${c[`c${i}`]}`}>
+                  {step.votes}
+                </span>
+              ))}{' '}
+              ta ovoz
+            </b>{' '}
+            × {PAYOUT} so‘m
+          </p>
+
+          <div className={c.bar} aria-hidden>
+            <i />
+          </div>
+
+          <p className={c.hint}>Nechta ovoz berasiz?</p>
+          <div className={c.seg}>
+            {PAYOUT_STEPS.map((step, i) => (
+              <label key={step.votes} htmlFor={`hisob-${i}`} className={c[`seg${i}`]}>
+                {step.votes}
+                <small>ovoz</small>
+              </label>
+            ))}
+          </div>
+
+          <ul className={c.facts}>
+            <li>
+              Bitta ovozga ketadigan vaqt <b>2 daqiqa</b>
+            </li>
+            <li>
+              Komissiya va xizmat haqi <b>0 so‘m</b>
+            </li>
+            <li>
+              Kerak bo‘ladigan hujjat <b>0 ta</b>
+            </li>
+          </ul>
         </div>
-      </header>
 
-      <main className={c.mainCol}>
-        {/* ── Hero mozaikasi: 6 katak, har biri bitta gap ── */}
-        <section className={c.bento}>
-          {/* Katta katak: sarlavha + CTA */}
-          <div className={`${c.cell} ${c.cellHero}`}>
-            {s.hero_badge ? <p className={c.badge}>{s.hero_badge}</p> : null}
-            <h1 className={c.title}>
-              {lines.map((line, i) => (
-                // Oxirgi qator ko'k markerda — ko'z avval shunga tushadi
-                <span key={line} className={i === lines.length - 1 ? c.titleHl : undefined}>
-                  {line}
-                </span>
-              ))}
-            </h1>
-            <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
-
-            <div className={c.ctaRing}>
-              <a href={tg} className={c.cta} data-t="cta" data-t-id="v4_hero" data-tg rel="noopener">
-                <Telegram size={20} />
-                {s.cta_primary}
-                <span className={c.ctaArrow} aria-hidden>
-                  →
-                </span>
-              </a>
-            </div>
-          </div>
-
-          {/* Narx katagi: sahifadagi eng katta raqam */}
-          <div className={`${c.cell} ${c.cellPrice}`}>
-            <p className={c.cellLab}>1 ovoz narxi</p>
-            <p className={c.priceFig}>
-              <span className={`${c.priceNum} tnum`}>{s.price_one_vote}</span>
-              <span className={c.priceCur}>so‘m</span>
-            </p>
-            <p className={c.priceFoot}>Yashirin komissiya yo‘q</p>
-          </div>
-
-          {/* To'lov usullari */}
-          <div className={`${c.cell} ${c.cellPay}`}>
-            <p className={c.cellLab}>To‘lov</p>
-            <ul className={c.chips}>
-              <li>Humo</li>
-              <li>Uzcard</li>
-              <li>Payme</li>
-            </ul>
-          </div>
-
-          {/* Foydalanuvchilar soni */}
-          <div className={`${c.cell} ${c.cellRev}`}>
-            <p className={`${c.revNum} tnum`}>{s.reviews_count}</p>
-            <p className={c.revLab}>foydalanuvchi tanladi</p>
-          </div>
-
-          {/* Dekorativ katak: halqa to'lqinlar — mozaikaga «nafas» beradi */}
-          <div className={`${c.cell} ${c.cellDeco}`}>
-            <span className={c.ripple} aria-hidden />
-            <span className={`${c.ripple} ${c.ripple2}`} aria-hidden />
-            <span className={`${c.ripple} ${c.ripple3}`} aria-hidden />
-            <p className={c.decoLab}>
-              <Check size={14} className={c.decoIco} /> Aniq narx
-            </p>
-          </div>
-
-          {/* Bot manzili — mozaikadan to'g'ridan-to'g'ri botga yo'l */}
+        {/* Ikkala tugma ham bitta botga olib boradi — qaysi biri
+            bosilganini analitika `data-t-id` orqali ajratadi */}
+        <div className={a.cta}>
           <a
             href={tg}
-            className={`${c.cell} ${c.cellBot}`}
+            className={`${a.btn} ${c.primary}`}
             data-t="cta"
-            data-t-id="v4_cell_bot"
+            data-t-id="v4_vote"
             data-tg
             rel="noopener"
           >
-            <p className={c.cellLab}>Telegram</p>
-            <p className={c.botName}>@{bot}</p>
-            <span className={c.botGo} aria-hidden>
-              →
-            </span>
+            Ovoz berish
           </a>
-        </section>
+          <a
+            href={tg}
+            className={`${a.btn} ${c.ghost}`}
+            data-t="cta"
+            data-t-id="v4_payout"
+            data-tg
+            rel="noopener"
+          >
+            Pulni olish
+          </a>
+          <p className={`${a.note} ${c.note}`}>To‘lov Uzcard yoki Humo kartaga tushadi</p>
+        </div>
+      </div>
 
-        <VariantSections
-          prefix="v4"
-          tg={tg}
-          botClean={bot}
-          s={s}
-          c={{
-            statsSec: c.sec,
-            stats: c.statRow,
-            stat: c.stat,
-            statNum: c.statNum,
-            statLab: c.statLab,
-            sec: c.sec,
-            kicker: c.kicker,
-            h2: c.h2,
-            secSub: c.secSub,
-            secAct: c.secAct,
-            steps: c.steps,
-            step: c.step,
-            stepNum: c.stepNum,
-            stepH: c.stepH,
-            stepP: c.stepP,
-            grid: c.pkGrid,
-            card: c.pk,
-            cardHot: c.pkInk,
-            cardBadge: c.pkBadge,
-            cardAmt: c.pkAmt,
-            cardNum: c.pkNum,
-            cardUnit: c.pkUnit,
-            cardPrice: c.pkPrice,
-            cardPer: c.pkPer,
-            faqList: c.faqList,
-            faqItem: c.faq,
-            faqQ: c.faqQ,
-            faqA: c.faqA,
-            finalPanel: `${c.cell} ${c.finalPanel}`,
-            finEyebrow: c.finEyebrow,
-            finalH: c.finalH,
-            finalHl: c.finalHl,
-            finalP: c.finalP,
-            finalList: c.finalList,
-            ctaRing: c.ctaRing,
-            cta: c.cta,
-            ctaArrow: c.ctaArrow,
-            foot: c.foot,
-            footIn: c.footIn,
-            footBrand: c.footBrand,
-            footLogo: c.footLogo,
-            footName: c.footName,
-            footNote: c.footNote,
-            footBot: c.footBot,
-          }}
-        />
-      </main>
-
-      {/* ── Variant almashtirgich: A/B ni qo'lda solishtirish uchun ── */}
-      <nav className={c.switcher} aria-label="Dizayn variantlari">
-        <a href="/1">1</a>
-        <a href="/2">2</a>
-        <a href="/3">3</a>
-        <a href="/4" className={c.swOn} aria-current="page">
-          4
-        </a>
-        <a href="/5">5</a>
-        <a href="/6">6</a>
-        <a href="/7">7</a>
-        <a href="/8">8</a>
-        <a href="/9">9</a>
-        <a href="/l">asl</a>
-      </nav>
-
+      <AdSwitcher current="4" />
       <Tracker />
-
-      {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: SITE.brand,
-            url: env.SITE_URL,
-            description: SITE.description,
-            sameAs: [`https://t.me/${s.tg_channel}`],
-          }),
-        }}
-      />
     </div>
   );
 }

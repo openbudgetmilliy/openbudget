@@ -1,297 +1,121 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
-import VariantSections from '@/components/landing/VariantSections';
-import { Wordmark } from '@/components/Logo';
-import { Check, Telegram } from '@/components/Icons';
+import Logo from '@/components/Logo';
+import AdSwitcher from '@/components/landing/AdSwitcher';
 
 import { getSettings } from '@/lib/data';
-import { SITE, applyVars, titleLines } from '@/lib/content';
+import { SITE } from '@/lib/content';
+import { PAYOUT } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
-import st from './page.module.css';
+import a from '@/components/landing/adscreen.module.css';
+import c from './page.module.css';
 
 /**
- * Variant 2 — "Pop plakat" (stiker neo-brutalizm).
+ * Variant 2 — «Moviy» (dizayn kanvasidagi 11-ekran).
  *
- * `/l` bilan bir xil ma'lumot manbalari, lekin butunlay boshqa ohang:
- * qalin ink konturlar, qattiq siljigan soyalar, iliq krem fon va
- * rangli stiker-kartalar. A/B sinov varianti — indekslanmaydi.
+ * Instagram stories tili, logotip ranglarida: to'liq ekranli moviy
+ * gradient, oq stiker ichidagi raqam. Bitta ekran, skrollsiz — reklama
+ * bosgan odam uchun bitta qaror.
  *
- * Sahifa `/l` kabi to'liq statik: `getSettings()` faqat build/revalidate
- * paytida chaqiriladi, foydalanuvchi so'rovida DB ishtirok etmaydi.
+ * Nima qayerdan keladi:
+ *   summa    — `lib/payout.ts` (asosiy sahifa bilan bitta manba)
+ *   bot      — `tgLink()`, admin sozlamasidagi `bot_username`
+ *   sarlavha — SHU VARIANTGA XOS. A/B sinovining ma'nosi shunda: matn ham
+ *              dizayn bilan birga sinaladi, shuning uchun u sozlamadan
+ *              olinmaydi.
+ *
+ * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
+/** A/B varianti — qidiruvga chiqmasin, indeks faqat asosiy sahifada */
 export const metadata: Metadata = {
-  // Brend nomi layout'dagi `%s · Brend` shablonidan keladi — bu yerda takrorlanmaydi
   title: 'Mukofot dasturi',
   robots: { index: false, follow: false },
 };
 
-/**
- * 16 uchli yulduz-portlash nuqtalari — narx kartasi orqasida sekin aylanadi.
- * Build paytida bir marta hisoblanadi, sahifaga tayyor satr sifatida kiradi.
- */
-const BURST_POINTS = Array.from({ length: 32 }, (_, i) => {
-  const r = i % 2 === 0 ? 100 : 60;
-  const a = (Math.PI * i) / 16;
-  return `${(100 + r * Math.cos(a)).toFixed(1)},${(100 + r * Math.sin(a)).toFixed(1)}`;
-}).join(' ');
+/** Ekran moviy — brauzer paneli ham shu rangda bo'lsin */
+export const viewport: Viewport = {
+  themeColor: '#0090d8',
+  colorScheme: 'dark',
+};
 
-export default async function Variant2() {
+export default async function VariantMoviy() {
   const s = await getSettings();
-  const bot = s.bot_username || env.BOT;
-  const botClean = bot.replace(/^@/, '');
-  const tg = tgLink(bot, 'web');
-
-  const vars = { narx: s.price_one_vote };
-  // `|` dan keyingi qism narxni takrorlardi — narx alohida stikerda katta
-  const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
-
-  // Lentada aylanadigan ishonch iboralari
-  const ribbon = [
-    'Aniq narx',
-    'Humo · Uzcard · Payme',
-    `${s.reviews_count} foydalanuvchi`,
-    'Telegram bot orqali',
-    'Yashirin komissiya yo‘q',
-  ];
+  const tg = tgLink(s.bot_username || env.BOT, 'web');
 
   return (
-    <div className={st.page}>
-      {/* ── Yopishqoq header: oq, qalin ink pastki chegara ── */}
-      <header className={st.hdr}>
-        <div className={st.hdrIn}>
-          <a href="#top" className={st.brand} aria-label={SITE.brand}>
-            <Wordmark size={34} />
-          </a>
+    <div className={`${a.screen} ${c.page} doc-blue`}>
+      <div className={c.bg} aria-hidden />
+
+      <div className={a.wrap}>
+        <header className={a.head}>
+          <div className={c.brand}>
+            <span className={c.mark}>
+              <Logo size={26} className={c.markImg} />
+            </span>
+            {SITE.brand}
+          </div>
+          <span className={c.tag}>Bugun ochiq</span>
+        </header>
+
+        <div className={a.mid}>
+          <h1 className={c.title}>
+            Bitta ovoz.
+            <br />
+            Naqd mukofot.
+          </h1>
+          <p className={c.sub}>
+            Ochiq byudjet loyihasiga ovoz bering — pul kartangizga o‘sha kuni tushadi.
+          </p>
+
+          <div className={c.sticker}>
+            <p className={c.sNum}>{PAYOUT}</p>
+            <p className={c.sLab}>so‘m / har bir ovoz</p>
+          </div>
+
+          <div className={c.row}>
+            <span className={c.pill}>2 daqiqa</span>
+            <span className={c.pill}>Uzcard / Humo</span>
+            <span className={c.pill}>Bepul</span>
+          </div>
+        </div>
+
+        {/* Ikkala tugma ham bitta botga olib boradi — qaysi biri
+            bosilganini analitika `data-t-id` orqali ajratadi */}
+        <div className={a.cta}>
           <a
             href={tg}
-            className={`${st.btnPop} ${st.btnSm}`}
+            className={`${a.btn} ${c.primary}`}
             data-t="cta"
-            data-t-id="v2_header"
+            data-t-id="v2_vote"
             data-tg
             rel="noopener"
           >
-            <Telegram size={16} />
-            Botga o‘tish
+            Ovoz berish
           </a>
+          <a
+            href={tg}
+            className={`${a.btn} ${c.ghost}`}
+            data-t="cta"
+            data-t-id="v2_payout"
+            data-tg
+            rel="noopener"
+          >
+            Pulni olish
+          </a>
+          <p className={`${a.note} ${c.note}`}>
+            Ro‘yxatdan o‘tish shart emas — Telegram yetarli
+          </p>
         </div>
-      </header>
+      </div>
 
-      <main id="top">
-        {/* ── Hero: badge + marker-sarlavha + yulduzli narx stikeri ── */}
-        <section className={st.hero}>
-          {/* Fon shakllari — juda och, matn kontrastiga ta'sir qilmaydi */}
-          <div className={st.blobA} aria-hidden />
-          <div className={st.blobB} aria-hidden />
-
-          <div className={st.heroIn}>
-            {s.hero_badge ? (
-              <p className={st.badge}>
-                <span className={st.badgeWig}>
-                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden fill="currentColor">
-                    <path d="M12 1.8l2.9 6.2 6.8.8-5 4.6 1.3 6.7-6-3.3-6 3.3 1.3-6.7-5-4.6 6.8-.8z" />
-                  </svg>
-                  {s.hero_badge}
-                </span>
-              </p>
-            ) : null}
-
-            <h1 className={st.title}>
-              {lines.map((line, i) => (
-                <span
-                  key={line}
-                  className={
-                    // Marker plitalar oxirgi qatorlarga tushadi — ko'z narx
-                    // tomon "pastga" yetaklanadi
-                    i === lines.length - 1
-                      ? st.mSun
-                      : i === lines.length - 2
-                        ? st.mGreen
-                        : undefined
-                  }
-                >
-                  {line}
-                </span>
-              ))}
-            </h1>
-
-            <div className={st.priceWrap}>
-              {/* Sekin aylanadigan sariq portlash — narxga sahna yaratadi */}
-              <div className={st.burstBox} aria-hidden>
-                <svg className={st.burst} viewBox="0 0 200 200">
-                  <polygon points={BURST_POINTS} fill="#ffd23f" stroke="#08243a" strokeWidth="3" />
-                </svg>
-              </div>
-              <div className={st.priceCard}>
-                <p className={st.priceLab}>1 ovoz narxi</p>
-                <p className={st.priceFig}>
-                  <span className={`${st.priceNum} tnum`}>{s.price_one_vote}</span>
-                  <span className={st.priceCur}>so‘m</span>
-                </p>
-              </div>
-            </div>
-
-            <p className={st.heroSub}>{applyVars(s.hero_sub, vars)}</p>
-
-            <div className={st.heroAct}>
-              <a
-                href={tg}
-                className={`${st.btnPop} ${st.btnBig}`}
-                data-t="cta"
-                data-t-id="v2_hero"
-                data-tg
-                rel="noopener"
-              >
-                <Telegram />
-                {s.cta_primary}
-              </a>
-            </div>
-
-            <ul className={st.trust}>
-              <li className={`${st.chip} ${st.chipGreen}`}>
-                <Check /> Aniq narx
-              </li>
-              <li className={`${st.chip} ${st.chipSun}`}>
-                <Check /> Humo · Uzcard · Payme
-              </li>
-              <li className={`${st.chip} ${st.chipPaper}`}>
-                <Check /> {s.reviews_count} foydalanuvchi
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        {/* ── Shaxmat qirrali yuguruvchi lenta ── */}
-        <div className={st.marquee} aria-hidden>
-          <div className={st.mTrack}>
-            {[0, 1].map((copy) => (
-              <div className={st.mRow} key={copy}>
-                {ribbon.map((t) => (
-                  <span key={t} className={st.mItem}>
-                    {t}
-                    <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor">
-                      <path d="M12 1.8l2.9 6.2 6.8.8-5 4.6 1.3 6.7-6-3.3-6 3.3 1.3-6.7-5-4.6 6.8-.8z" />
-                    </svg>
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <VariantSections
-          prefix="v2"
-          tg={tg}
-          botClean={botClean}
-          s={s}
-          c={{
-            statsSec: st.stats,
-            stats: st.statGrid,
-            stat: st.stat,
-            statNum: st.statNum,
-            statLab: st.statLab,
-            secSteps: st.how,
-            secRewards: st.prices,
-            secFaq: st.faq,
-            secHead: st.secHead,
-            kicker: st.kicker,
-            secTitle: st.secTitle,
-            secSub: st.secSub,
-            secAct: st.secAct,
-            steps: st.stepGrid,
-            step: st.step,
-            stepNum: st.stepNum,
-            stepTitle: st.stepTitle,
-            stepText: st.stepText,
-            grid: st.grid,
-            card: st.card,
-            cardHot: st.cardGreen,
-            cardBadge: st.cardBadge,
-            cardAmt: st.cardFig,
-            cardNum: st.cardNum,
-            cardCur: st.cardCur,
-            cardTitle: st.cardTitle,
-            per: st.per,
-            faqList: st.faqList,
-            faqItem: st.faqItem,
-            faqSum: st.faqSum,
-            faqBody: st.faqBody,
-            faqIcon: st.faqIcon,
-            finalSec: st.finalWrap,
-            final: st.final,
-            finEyebrow: st.finEyebrow,
-            finalTitle: st.finalTitle,
-            finalSub: st.finalSub,
-            finalList: st.finalList,
-            btnPop: st.btnPop,
-            btnBig: st.btnBig,
-            btnSun: st.btnSun,
-            foot: st.foot,
-            footIn: st.footIn,
-            footBrand: st.footBrand,
-            footLogo: st.footLogo,
-            footName: st.footName,
-            footNote: st.footNote,
-            footBot: st.footBot,
-          }}
-        />
-      </main>
-
-      {/* ── Variant almashtirgich — ichki sinov uchun, foydalanuvchiga xalaqit bermaydi ── */}
-      <nav className={st.switcher} aria-label="Dizayn variantlari">
-        <a href="/1" className={st.swLink}>
-          1
-        </a>
-        <a href="/2" className={`${st.swLink} ${st.swActive}`} aria-current="page">
-          2
-        </a>
-        <a href="/3" className={st.swLink}>
-          3
-        </a>
-        <a href="/4" className={st.swLink}>
-          4
-        </a>
-        <a href="/5" className={st.swLink}>
-          5
-        </a>
-        <a href="/6" className={st.swLink}>
-          6
-        </a>
-        <a href="/7" className={st.swLink}>
-          7
-        </a>
-        <a href="/8" className={st.swLink}>
-          8
-        </a>
-        <a href="/9" className={st.swLink}>
-          9
-        </a>
-        <a href="/l" className={st.swLink}>
-          asl
-        </a>
-      </nav>
-
+      <AdSwitcher current="2" />
       <Tracker />
-
-      {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: SITE.brand,
-            url: env.SITE_URL,
-            description: SITE.description,
-            sameAs: [`https://t.me/${s.tg_channel}`],
-          }),
-        }}
-      />
     </div>
   );
 }

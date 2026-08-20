@@ -18,6 +18,21 @@ export const display = Archivo({
   axes: ['wdth'],
   variable: '--font-display',
   display: 'swap',
+  /**
+   * PRELOAD YO'Q — ATAYIN.
+   *
+   * `fontVars` root layout'da <html> ga qo'yiladi, ya'ni preload BARCHA
+   * marshrutlarga tushardi. Asosiy sahifa («Oltin» ekrani) esa Archivo'ni
+   * umuman ishlatmaydi — Manrope bilan yashaydi. Reklama trafigi aynan
+   * o'sha sahifaga tushadi va u 90 KB lik keraksiz shriftni birinchi
+   * navbatda yuklab olardi (LCP rasmi bilan bir vaqtda!).
+   *
+   * Preloadsiz shrift umuman so'ralmaydi — sahifada uni ishlatadigan matn
+   * bo'lmasa. Archivo ishlatadigan sahifalar (`/l`, `/1`, `/2`, `/3`, `/4`,
+   * `/5`) uni CSS qo'llangan zahoti so'raydi: bir necha millisekund
+   * kechroq, lekin o'sha sahifalar A/B taqqoslash uchun.
+   */
+  preload: false,
 });
 
 export const fontVars = display.variable;

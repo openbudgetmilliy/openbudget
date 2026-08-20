@@ -1,246 +1,172 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 
-import Logo from '@/components/Logo';
 import Tracker from '@/components/Tracker';
-import VariantSections from '@/components/landing/VariantSections';
-import { Telegram, Check } from '@/components/Icons';
+import Logo from '@/components/Logo';
+import AdSwitcher from '@/components/landing/AdSwitcher';
 
 import { getSettings } from '@/lib/data';
-import { SITE, applyVars, titleLines } from '@/lib/content';
+import { SITE } from '@/lib/content';
+import { PAYOUT } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
+import a from '@/components/landing/adscreen.module.css';
 import c from './page.module.css';
 
 /**
- * Variant 5 — «Candy suyuq».
+ * Variant 5 — «Qo'lyozma» (dizayn kanvasidagi 16-ekran).
  *
- * Shirin-pastel talqin: morph qiluvchi suyuq bloblar, rezina «squish»
- * tugmalar, gradient-matn. Maqsad — A/B sinovda «yumshoq va do'stona»
- * yo'nalishini o'lchash: jiddiy plakat o'rniga o'ynoqi muloyimlik.
+ * Brend emas, odam: katak daftar varag'i, ruchka bilan yozilgan gap,
+ * marker bilan aylantirilgan summa. Lentada eng kam «reklama»ga
+ * o'xshaydigan kadr — shuning uchun ko'proq to'xtatadi.
  *
- * `/l` bilan bir xil qoidalar: SSG, so'rov paytida hech narsa hisoblanmaydi,
- * yagona client kod — Tracker.
+ * MANBADAN IKKI FARQ — ikkalasi ham bir sababdan:
+ *
+ *   1. Skotchlangan qog'ozda «Kechagi to'lov · UZCARD •• 8600 · 14:32»
+ *      turardi — aniq vaqt va karta raqami bilan. Bu sodir bo'lmagan
+ *      tranzaksiyani da'vo qiladi. Qog'oz saqlandi, mazmuni esa endi
+ *      da'vo emas, TARIF: bir ovoz uchun qancha to'lanadi.
+ *   2. «bugun 1 240 kishi oldi» — tekshirib bo'lmaydigan kunlik raqam.
+ *      O'rniga admin sozlamasidagi haqiqiy foydalanuvchilar soni.
+ *
+ * Sana `new Date()` dan: sahifa har daqiqada qayta chiziladi
+ * (`revalidate: 60`), shuning uchun u eskirib qolmaydi.
+ *
+ * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
  */
 export const revalidate = 60;
 export const dynamic = 'force-static';
 
-/** A/B varianti — qidiruvga chiqmasligi shart, aks holda trafik buziladi */
+/** A/B varianti — qidiruvga chiqmasin, indeks faqat asosiy sahifada */
 export const metadata: Metadata = {
-  // Layout shablon `· brend` qo'shadi — brend bu yerda takrorlanmaydi
   title: 'Mukofot dasturi',
   robots: { index: false, follow: false },
 };
 
-/** Uchqun — sparkle bezak. Emoji emas: rang va o'lcham CSS'dan boshqariladi */
-function Spark({ className }: { className?: string }) {
+export const viewport: Viewport = {
+  themeColor: '#fbfaf3',
+  colorScheme: 'light',
+};
+
+/** Daftar chetidagi sana — «19/08» ko'rinishida */
+function today(): string {
+  const d = new Date();
+  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/** Ro'yxatdagi tasdiq belgisi — qo'lda chizilgandek qalin va yumaloq */
+function Tick() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden className={className}>
-      <path d="M12 0c.8 6.5 4.7 10.4 12 12-7.3 1.6-11.2 5.5-12 12-.8-6.5-4.7-10.4-12-12C7.3 10.4 11.2 6.5 12 0z" />
-    </svg>
+    <span className={c.tick} aria-hidden>
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="m4 13 6 6L21 5" />
+      </svg>
+    </span>
   );
 }
 
-/** Marquee bir marta aniqlanadi — ikki nusxada aynan shu ro'yxat aylanadi */
-function marqueeItems(reviews: string): string[] {
-  return [
-    'Humo · Uzcard · Payme',
-    'Aniq narx',
-    `${reviews} foydalanuvchi`,
-    'SMS tasdiqlash',
-    'Yashirin komissiya yo‘q',
-  ];
-}
-
-export default async function VariantCandy() {
+export default async function VariantQolyozma() {
   const s = await getSettings();
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
-  const tg = tgLink(bot, 'web');
-
-  const vars = { narx: s.price_one_vote };
-  // `|` dan keyingi qism narxni takrorlaydi — narx alohida blob-kartada
-  const lines = titleLines(applyVars(s.hero_title, vars).split('|')[0]);
-  const ticker = marqueeItems(s.reviews_count);
+  const tg = tgLink(s.bot_username || env.BOT, 'web');
 
   return (
-    <div className={c.page}>
-      {/* Fon qatlami: morph bloblar. Alohida div — matn qatlamiga
-          animatsiya yuqmasin */}
-      <div className={c.goo} aria-hidden>
-        <span className={`${c.blob} ${c.blobPink}`} />
-        <span className={`${c.blob} ${c.blobBlue}`} />
-        <span className={`${c.blob} ${c.blobMint}`} />
+    <div className={`${a.screen} ${c.page} doc-note`}>
+      <div className={c.bg} aria-hidden />
+      <div className={c.marg} aria-hidden />
+
+      <div className={a.wrap}>
+        <header className={`${a.head} ${c.head}`}>
+          <div className={c.brand}>
+            <span className={c.mark}>
+              <Logo size={22} className={c.markImg} />
+            </span>
+            {SITE.brand}
+          </div>
+          <span className={c.date}>{today()}</span>
+        </header>
+
+        <div className={a.mid}>
+          <h1 className={c.title}>
+            Ovoz ber —
+            <br />
+            <span className={c.ring}>
+              {PAYOUT}
+              <svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden>
+                <path d="M186 16C160 5 96 2 46 9 10 14 4 34 22 46c24 15 102 17 152 8 17-3 24-11 15-20-8-8-38-13-80-13" />
+              </svg>
+            </span>{' '}
+            so‘m ol
+          </h1>
+
+          <p className={c.sub}>
+            Ochiq budjet loyihasiga ovoz berasiz — pul o‘sha kuni kartangizga tushadi. Boshqa
+            hech narsa qilish shart emas.
+          </p>
+
+          <div className={c.taped}>
+            <span className={`${c.tape} ${c.t1}`} aria-hidden />
+            <span className={`${c.tape} ${c.t2}`} aria-hidden />
+            <p className={c.tT}>Bir ovoz uchun</p>
+            <p className={`${c.tN} tnum`}>+{PAYOUT} so‘m</p>
+            <p className={c.tS}>Uzcard yoki Humo kartaga</p>
+          </div>
+
+          <ul className={c.list}>
+            <li>
+              <Tick /> 2 daqiqa vaqt ketadi
+            </li>
+            <li>
+              <Tick /> hujjat kerak emas
+            </li>
+            <li>
+              <Tick /> Uzcard ham, Humo ham
+            </li>
+          </ul>
+        </div>
+
+        {/* Ikkala tugma ham bitta botga olib boradi — qaysi biri
+            bosilganini analitika `data-t-id` orqali ajratadi */}
+        <div className={a.cta}>
+          <svg className={c.arrow} viewBox="0 0 54 56" aria-hidden>
+            <path d="M10 4c18 7 26 19 24 32-.7 5-2.6 9-5.6 12.5" />
+            <path d="M20 37l8.5 13 12-8" />
+          </svg>
+
+          <a
+            href={tg}
+            className={`${a.btn} ${c.primary}`}
+            data-t="cta"
+            data-t-id="v5_vote"
+            data-tg
+            rel="noopener"
+          >
+            Ovoz berish
+          </a>
+          <a
+            href={tg}
+            className={`${a.btn} ${c.ghost}`}
+            data-t="cta"
+            data-t-id="v5_payout"
+            data-tg
+            rel="noopener"
+          >
+            Pulni olish
+          </a>
+          <p className={`${a.note} ${c.note}`}>{s.reviews_count} kishi allaqachon oldi</p>
+        </div>
       </div>
 
-      {/* ── Header: oq shisha, pill CTA ── */}
-      <header className={c.hdr}>
-        <div className={c.hdrIn}>
-          <span className={c.brand}>
-            <Logo size={30} className={c.logoImg} />
-            {SITE.brand}
-          </span>
-          <a href={tg} className={c.btnSm} data-t="cta" data-t-id="v5_header" data-tg rel="noopener">
-            <Telegram size={15} />
-            Botga o‘tish
-          </a>
-        </div>
-      </header>
-
-      <main>
-        {/* ── Hero ── */}
-        <section className={c.hero}>
-          <div className={c.heroIn}>
-            {s.hero_badge ? <p className={c.badge}>{s.hero_badge}</p> : null}
-
-            <h1 className={c.title}>
-              {lines.map((line, i) => (
-                // Oxirgi qator candy gradientda — shirinlikning markazi
-                <span key={line} className={i === lines.length - 1 ? c.titleHl : undefined}>
-                  {line}
-                </span>
-              ))}
-              <Spark className={`${c.spark} ${c.spark1}`} />
-              <Spark className={`${c.spark} ${c.spark2}`} />
-            </h1>
-
-            <p className={c.sub}>{applyVars(s.hero_sub, vars)}</p>
-
-            {/* Narx — oq super-ellips karta, orqasida morph halo */}
-            <div className={c.priceWrap}>
-              <span className={c.priceHalo} aria-hidden />
-              <div className={c.priceCard}>
-                <p className={c.priceLab}>1 ovoz narxi</p>
-                <p className={c.priceFig}>
-                  <span className={`${c.priceNum} tnum`}>{s.price_one_vote}</span>
-                </p>
-                <p className={c.priceCur}>so‘m</p>
-              </div>
-            </div>
-
-            <div className={c.heroAct}>
-              <a href={tg} className={c.cta} data-t="cta" data-t-id="v5_hero" data-tg rel="noopener">
-                <Telegram size={20} className={c.ctaIco} />
-                {s.cta_primary}
-              </a>
-            </div>
-
-            <ul className={c.trust}>
-              <li className={c.chipBlue}>
-                <Check size={14} /> Aniq narx
-              </li>
-              <li className={c.chipPink}>
-                <Check size={14} /> Humo · Uzcard · Payme
-              </li>
-              <li className={c.chipMint}>
-                <Check size={14} /> {s.reviews_count} foydalanuvchi
-              </li>
-            </ul>
-          </div>
-        </section>
-
-        {/* ── Marquee: pastel lenta, yulduzcha ajratgichlar ── */}
-        <div className={c.ticker} aria-hidden>
-          <div className={c.tickerTrack}>
-            {[0, 1].map((copy) => (
-              <ul key={copy} className={c.tickerRow}>
-                {ticker.map((t) => (
-                  <li key={t}>
-                    <Spark className={c.tickerStar} />
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
-        </div>
-
-        <VariantSections
-          prefix="v5"
-          tg={tg}
-          botClean={bot}
-          s={s}
-          c={{
-            statsSec: c.statsSec,
-            secIn: c.secIn,
-            stats: c.stats,
-            stat: c.stat,
-            statNum: c.statNum,
-            statLab: c.statLab,
-            sec: c.sec,
-            kicker: c.kicker,
-            h2: c.h2,
-            secSub: c.secSub,
-            secAct: c.secAct,
-            steps: c.steps,
-            step: c.step,
-            stepNum: c.stepBall,
-            stepH: c.stepH,
-            stepP: c.stepP,
-            grid: c.grid,
-            card: c.card,
-            cardHot: c.cardHot,
-            cardBadge: c.cardBadge,
-            cardAmt: c.cardAmt,
-            cardNum: c.cardNum,
-            cardUnit: c.cardUnit,
-            cardPrice: c.cardPrice,
-            cardPer: c.cardPer,
-            faq: c.faq,
-            faqItem: c.faqItem,
-            faqQ: c.faqQ,
-            faqA: c.faqA,
-            faqMark: c.faqMark,
-            finalSec: c.finalSec,
-            final: c.final,
-            finEyebrow: c.finEyebrow,
-            finalH: c.finalH,
-            finalP: c.finalP,
-            finalList: c.finalList,
-            cta: c.cta,
-            btnLight: c.ctaLight,
-            foot: c.foot,
-            footIn: c.footIn,
-            footBrand: c.footBrand,
-            footLogo: c.footLogo,
-            footName: c.footName,
-            footNote: c.footNote,
-            footBot: c.footBot,
-          }}
-        />
-      </main>
-
-      {/* ── Variant almashtirgich: A/B ni qo'lda solishtirish uchun ── */}
-      <nav className={c.switcher} aria-label="Dizayn variantlari">
-        <a href="/1">1</a>
-        <a href="/2">2</a>
-        <a href="/3">3</a>
-        <a href="/4">4</a>
-        <a href="/5" className={c.swOn} aria-current="page">
-          5
-        </a>
-        <a href="/6">6</a>
-        <a href="/7">7</a>
-        <a href="/8">8</a>
-        <a href="/9">9</a>
-        <a href="/l">asl</a>
-      </nav>
-
+      <AdSwitcher current="5" />
       <Tracker />
-
-      {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: SITE.brand,
-            url: env.SITE_URL,
-            description: SITE.description,
-            sameAs: [`https://t.me/${s.tg_channel}`],
-          }),
-        }}
-      />
     </div>
   );
 }

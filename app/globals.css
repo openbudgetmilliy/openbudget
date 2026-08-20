@@ -523,6 +523,35 @@ body:has(.oltin-dark) {
   background: #222c3f;
 }
 
+/* A/B reklama ekranlari (`/2`–`/5`) — o'sha sabab, o'sha usul.
+   Har biri o'z fonini oladi, chunki CSS `:has()` ichidan qiymat o'qiy
+   olmaydi: rangni selektorning o'zi olib keladi. */
+
+html:root:has(.doc-blue),
+body:has(.doc-blue) {
+  background: #0a58c4;
+}
+
+html:root:has(.doc-navy),
+body:has(.doc-navy) {
+  background: #080d14;
+}
+
+html:root:has(.doc-blue),
+html:root:has(.doc-navy) {
+  color-scheme: dark;
+}
+
+html:root:has(.doc-paper),
+body:has(.doc-paper) {
+  background: #f4f2ec;
+}
+
+html:root:has(.doc-note),
+body:has(.doc-note) {
+  background: #fbfaf3;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

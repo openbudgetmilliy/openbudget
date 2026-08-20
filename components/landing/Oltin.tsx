@@ -3,6 +3,7 @@ import { Manrope } from 'next/font/google';
 import Tracker from '@/components/Tracker';
 
 import type { Settings } from '@/lib/data';
+import { PAYOUT } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -55,15 +56,6 @@ const manrope = Manrope({ subsets: ['latin'], variable: '--f-oltin', display: 's
  */
 const BRAND = 'OpenBudget';
 
-/**
- * Bir ovoz uchun to'lov — RASM BILAN BOG'LIQ.
- *
- * Yonidagi banknota aynan 20 000 so'mlik. Summa o'zgarsa rasm ham
- * almashtirilishi shart, aks holda matn va rasm bir-birini yolg'onga
- * chiqaradi. Shuning uchun u admin sozlamasidan olinmaydi: `price_one_vote`
- * — ovozning SOTUV narxi (`/3` dagi «1 ovoz narxi»), bu esa to'lov.
- */
-const PAYOUT = '20 000';
 
 export default function Oltin({ s }: { s: Settings }) {
   const tg = tgLink(s.bot_username || env.BOT, 'web');
