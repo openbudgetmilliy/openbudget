@@ -127,10 +127,18 @@ export default function Oltin({ s }: { s: Settings }) {
 
         <div className={st.gap} aria-hidden />
 
-        {/* Ikkala tugma ham bitta botga olib boradi (start qiymati bir xil —
-            bot yangi payload kutmaydi). Qaysi tugma bosilganini analitika
+        {/* Tugma bitta botga olib boradi. Qaysi tugma bosilganini analitika
             `data-t-id` orqali ajratadi. */}
         <div className={st.act}>
+          {isOpen() ? (
+            <Countdown
+              initial={left}
+              /* Sarlavhasiz: bitta ekranli kadrda joy tor, kataklar ostidagi
+                 kun/soat/daq/son yorlig'i vaqtni o'zi tushuntiradi */
+              lead=""
+              classes={{ root: st.cd, cell: st.cdCell, num: st.cdNum, lab: st.cdLab }}
+            />
+          ) : null}
           <a
             href={tg}
             className={`${st.btn} ${st.btnP}`}
@@ -141,30 +149,7 @@ export default function Oltin({ s }: { s: Settings }) {
           >
             Ovoz berish
           </a>
-          <a
-            href={tg}
-            className={`${st.btn} ${st.btnS}`}
-            data-t="cta"
-            data-t-id="main_payout"
-            data-tg
-            rel="noopener"
-          >
-            Pulni olish
-          </a>
         </div>
-
-        {/* Aksiya muddati — ekranning eng pastida. Ikkita `.gap` cho'zuvchi
-            bo'sh joyni yutgani uchun kompozitsiya siljimaydi: taymer
-            o'sha bo'shliqning bir qismini oladi, xolos. */}
-        {isOpen() ? (
-          <Countdown
-            initial={left}
-            /* Sarlavhasiz: bitta ekranli kadrda joy tor, kataklar ostidagi
-               kun/soat/daq/son yorlig'i vaqtni o'zi tushuntiradi */
-            lead=""
-            classes={{ root: st.cd, cell: st.cdCell, num: st.cdNum, lab: st.cdLab }}
-          />
-        ) : null}
       </div>
 
       <Tracker />

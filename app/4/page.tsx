@@ -139,35 +139,10 @@ export default async function VariantHisob() {
         {/* Ikkala tugma ham bitta botga olib boradi — qaysi biri
             bosilganini analitika `data-t-id` orqali ajratadi */}
         <div className={a.cta}>
-          <a
-            href={tg}
-            className={`${a.btn} ${c.primary}`}
-            data-t="cta"
-            data-t-id="v4_vote"
-            data-tg
-            rel="noopener"
-          >
-            Ovoz berish
-          </a>
-          <a
-            href={tg}
-            className={`${a.btn} ${c.ghost}`}
-            data-t="cta"
-            data-t-id="v4_payout"
-            data-tg
-            rel="noopener"
-          >
-            Pulni olish
-          </a>
-          <p className={`${a.note} ${c.note}`}>To‘lov Uzcard yoki Humo kartaga tushadi</p>
           {open ? (
             <Countdown
               initial={left}
-              /* Sarlavhasiz va izohsiz: bitta ekranli kadrda har piksel
-                 hisobda. Kataklar ostidagi kun/soat/daq/son yorlig'i vaqtni
-                 o'zi tushuntiradi; aniq sana `/1` va `/6`–`/8` da qoladi. */
               lead=""
-
               classes={{
                 root: c.cd,
                 lead: c.cdLead,
@@ -179,6 +154,17 @@ export default async function VariantHisob() {
               }}
             />
           ) : null}
+          <a
+            href={tg}
+            className={`${a.btn} ${c.primary}`}
+            data-t="cta"
+            data-t-id="v4_vote"
+            data-tg
+            rel="noopener"
+          >
+            Ovoz berish
+          </a>
+          <p className={`${a.note} ${c.note}`}>To‘lov Uzcard yoki Humo kartaga tushadi</p>
         </div>
       </div>
 

@@ -63,7 +63,7 @@ export type CountdownClasses = {
 
 export default function Countdown({
   initial,
-  lead = 'Ovoz berish tugashiga qolgan vaqt',
+  lead = '',
   note,
   classes = {},
 }: {

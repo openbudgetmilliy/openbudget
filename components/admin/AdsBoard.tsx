@@ -11,15 +11,8 @@ type Landing = { path: string; name: string; slug: string; note: string };
  * alohida havola talab qiladi. Havolani qo'lda yozishda eng ko'p uchraydigan
  * ikki xato — `utm_content` ni tushirib qoldirish va noto'g'ri sahifani
  * qo'yish; ikkalasi ham statistikani ishlatib bo'lmaydigan qilib qo'yadi.
- * Shuning uchun havolalar SHU YERDA yig'iladi va faqat nusxalanadi.
- *
- * TAMG'ALAR YUQORIDA BIR MARTA yoziladi va sakkizta havolaga birdan
- * qo'llanadi — kampaniya nomini har qatorga qayta kiritish shart emas.
- * Bo'sh maydon havolaga umuman qo'shilmaydi.
- *
- * Nusxalash `navigator.clipboard` orqali; u faqat HTTPS/localhost'da
- * ishlaydi, shuning uchun havolaning o'zi ham ekranda ko'rinib turadi —
- * tugma qulaylik, yagona yo'l emas.
+ * Shuning uchun havolalar SHU YERDA yig'iladi. Havolaning o'zi ekranda
+ * ko'rinib turadi — qo'lda tanlab olish mumkin.
  */
 
 const SOURCES = ['instagram', 'facebook', 'telegram', 'tiktok', 'youtube'];
@@ -28,20 +21,16 @@ const MEDIUMS = ['paid', 'stories', 'reels', 'post', 'bio'];
 export default function AdsBoard({
   landings,
   origin,
-  bot,
 }: {
   landings: Landing[];
   origin: string;
-  bot: string;
 }) {
   const [source, setSource] = useState('instagram');
   const [medium, setMedium] = useState('paid');
   const [campaign, setCampaign] = useState('');
   const [creative, setCreative] = useState('01');
-  const [copied, setCopied] = useState<string | null>(null);
 
   const base = origin.replace(/\/$/, '');
-  const botClean = bot.replace(/^@/, '');
 
   const links = useMemo(
     () =>
@@ -58,32 +47,16 @@ export default function AdsBoard({
         return {
           l,
           site: `${base}${l.path === '/' ? '/' : l.path}?${q.toString()}`,
-          bot: `https://t.me/${botClean}?start=${l.slug}`,
         };
       }),
-    [landings, base, botClean, source, medium, campaign, creative],
+    [landings, base, source, medium, campaign, creative],
   );
-
-  async function copy(text: string, key: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(key);
-      setTimeout(() => setCopied((c) => (c === key ? null : c)), 1600);
-    } catch {
-      /* clipboard yopiq — havola ekranda tanlanadigan holda qoladi */
-    }
-  }
-
-  const allText = links.map((x) => `${x.l.name}\t${x.site}`).join('\n');
 
   return (
     <>
       <div className="a-panel">
         <div className="a-panel-h">
           <span>Tamg’alar — sakkizala havolaga birdan qo’llanadi</span>
-          <button className="a-btn" onClick={() => copy(allText, '__all')} type="button">
-            {copied === '__all' ? '✓ nusxalandi' : 'Hammasini nusxalash'}
-          </button>
         </div>
         <div className="a-panel-b">
           <div style={{ display: 'grid', gap: 14, gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))' }}>
@@ -156,11 +129,10 @@ export default function AdsBoard({
               <tr>
                 <th style={{ width: 210 }}>Kadr</th>
                 <th>Sayt havolasi</th>
-                <th style={{ width: 210 }}>To’g’ridan botga</th>
               </tr>
             </thead>
             <tbody>
-              {links.map(({ l, site, bot: botUrl }) => (
+              {links.map(({ l, site }) => (
                 <tr key={l.slug}>
                   <td>
                     <a href={`/admin/p/${l.slug}`} style={{ fontWeight: 650 }}>
@@ -183,26 +155,9 @@ export default function AdsBoard({
                     >
                       {site.replace(/^https?:\/\//, '')}
                     </code>
-                    <div style={{ display: 'flex', gap: 8 }}>
-                      <button className="a-btn sm" onClick={() => copy(site, l.slug)} type="button">
-                        {copied === l.slug ? '✓ nusxalandi' : 'Nusxalash'}
-                      </button>
-                      <a className="a-btn sm ghost" href={site} target="_blank" rel="noopener">
-                        Ochish ↗
-                      </a>
-                    </div>
-                  </td>
-                  <td>
-                    <code style={{ fontSize: 11.5, color: '#93a1b8', display: 'block', wordBreak: 'break-all', marginBottom: 6 }}>
-                      ?start={l.slug}
-                    </code>
-                    <button
-                      className="a-btn sm ghost"
-                      onClick={() => copy(botUrl, `${l.slug}-bot`)}
-                      type="button"
-                    >
-                      {copied === `${l.slug}-bot` ? '✓ nusxalandi' : 'Nusxalash'}
-                    </button>
+                    <a className="a-btn sm ghost" href={site} target="_blank" rel="noopener">
+                      Ochish ↗
+                    </a>
                   </td>
                 </tr>
               ))}
@@ -212,9 +167,7 @@ export default function AdsBoard({
         <div className="a-panel-b" style={{ borderTop: '1px solid #1b2331' }}>
           <p style={{ fontSize: 12.5, color: '#59637a', lineHeight: 1.65, margin: 0 }}>
             Sayt havolasi — reklamani sahifaga olib boradi, kirgan odam «Sahifalar bo’yicha»
-            jadvalida o’sha qatorda sanaladi. To’g’ridan botga havolasi esa saytni chetlab o’tadi:
-            u faqat bot ichida hisoblanadi, saytdagi statistikaga tushmaydi. Ikkalasi ham{' '}
-            <code>{botClean}</code> ga olib boradi.
+            jadvalida o’sha qatorda sanaladi.
           </p>
         </div>
       </div>

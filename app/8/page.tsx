@@ -115,10 +115,6 @@ export default async function VariantNeon() {
           </p>
         </header>
 
-        {cta('v8_hero')}
-
-        <p className={c.micro}>Ishtirok butunlay bepul · Ovoz berish 30 soniya</p>
-
         {open ? (
           <section className={c.card} aria-label="Ovoz berish muddati">
             <h2 className={c.h2}>Ovozingizni hoziroq bering</h2>

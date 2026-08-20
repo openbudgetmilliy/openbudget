@@ -4,7 +4,6 @@ import LandingTable from '@/components/admin/LandingTable';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
 
 import { LANDINGS } from '@/lib/landings';
-import { getSettings } from '@/lib/data';
 import { landingPages } from '@/lib/stats';
 import { env } from '@/lib/env';
 
@@ -28,9 +27,6 @@ export default async function AdsPage({
 }) {
   const hours = parseHours((await searchParams).h, 168);
 
-  const s = await getSettings();
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
-
   let pages;
   try {
     pages = await landingPages(hours);
@@ -38,7 +34,7 @@ export default async function AdsPage({
     return (
       <>
         <h1 className="a-h1">Reklama</h1>
-        <AdsBoard landings={LANDINGS} origin={env.SITE_URL} bot={bot} />
+        <AdsBoard landings={LANDINGS} origin={env.SITE_URL} />
         <DbDown error={(err as Error).message} />
       </>
     );
@@ -49,7 +45,7 @@ export default async function AdsPage({
       <h1 className="a-h1">Reklama</h1>
       <p className="a-sub">Har kadr — alohida havola, alohida statistika</p>
 
-      <AdsBoard landings={LANDINGS} origin={env.SITE_URL} bot={bot} />
+      <AdsBoard landings={LANDINGS} origin={env.SITE_URL} />
 
       <div className="a-row">
         <RangePicker base="/admin/reklama" hours={hours} />

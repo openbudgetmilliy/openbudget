@@ -96,18 +96,6 @@ export default async function VariantPlakat() {
 
       <div className={`${a.wrap} ${c.wrap}`}>
         <div className={`${a.cta} ${c.cta}`}>
-          <a
-            href={tg}
-            className={`${a.btn} ${c.primary}`}
-            data-t="cta"
-            data-t-id="v6_vote"
-            data-tg
-            rel="noopener"
-          >
-            <Telegram size={21} />
-            Ovoz berish
-          </a>
-          <p className={`${a.note} ${c.note}`}>Telegramda ochiladi · @{bot}</p>
           {open ? (
             <Countdown
               initial={left}
@@ -123,6 +111,18 @@ export default async function VariantPlakat() {
               }}
             />
           ) : null}
+          <a
+            href={tg}
+            className={`${a.btn} ${c.primary}`}
+            data-t="cta"
+            data-t-id="v6_vote"
+            data-tg
+            rel="noopener"
+          >
+            <Telegram size={21} />
+            Ovoz berish
+          </a>
+          <p className={`${a.note} ${c.note}`}>Telegramda ochiladi · @{bot}</p>
         </div>
       </div>
 
