@@ -1,39 +1,28 @@
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Caveat, Inter } from 'next/font/google';
 
 /**
- * Variant 6 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas.
+ * Variant 6 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
+ * u yerdagi oila BARCHA sahifalarga preload bo'lib tushardi.
  *
- * `app/fonts.ts` root layout'ga ulangan: u yerga qo'shilgan har bir oila
- * BARCHA sahifalarga (jumladan `/l` va darvozaga) preload bo'lib tushardi.
- * Asosiy landing bitta Archivo bilan yashaydi va shu tezligini yo'qotmasligi
- * kerak, shuning uchun bu uch oila faqat `/6` so'ralganda yuklanadi.
- *
- * Uchtasi uch vazifa bajaradi va bittasi ham ortiqcha emas:
- *   Bricolage Grotesque — sarlavhalar (tor, qattiq, manfiy trekingli)
- *   Hanken Grotesk      — o'qish matni
- *   JetBrains Mono      — mayda yorliqlar, badge'lar va to'q panel ichi
+ * Ikkitasi, ikki vazifa:
+ *   Caveat — rasm ustiga qo'lda yozilgan narx (faqat shu ikki qator)
+ *   Inter  — tugma va uning ostidagi izoh; ular bosma bo'lib qolishi kerak,
+ *            aks holda «bosiladigan narsa» ekani yo'qoladi.
  */
-const display = Bricolage_Grotesque({
+const body = Inter({
   subsets: ['latin'],
-  weight: ['600', '700', '800'],
-  variable: '--f6-display',
-  display: 'swap',
-});
-
-const body = Hanken_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
+  weight: ['500', '600', '700'],
   variable: '--f6-body',
   display: 'swap',
 });
 
-const mono = JetBrains_Mono({
+const hand = Caveat({
   subsets: ['latin'],
-  weight: ['400', '500', '700'],
-  variable: '--f6-mono',
+  weight: ['500', '700'],
+  variable: '--f6-hand',
   display: 'swap',
 });
 
 export default function VariantSixLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`${display.variable} ${body.variable} ${mono.variable}`}>{children}</div>;
+  return <div className={`${body.variable} ${hand.variable}`}>{children}</div>;
 }
