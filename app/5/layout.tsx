@@ -1,27 +1,33 @@
-import { Caveat, Inter } from 'next/font/google';
+import { Montserrat, Playfair_Display } from 'next/font/google';
 
 /**
  * Variant 5 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
  * u yerdagi oila BARCHA sahifalarga preload bo'lib tushardi.
  *
- * `Caveat` — qo'l yozuvi. U FAQAT gapirayotgan ovozga tegishli (sarlavha,
- * ro'yxat, izoh); raqamlar va tugmalar bosma shriftda qoladi, aks holda
- * o'qish qiyinlashadi.
+ * Kadrning butun kuchi IKKI SHRIFT QARAMA-QARSHILIGIDA:
+ *
+ *   Montserrat 800  — geometrik, og'ir, keng. Sarlavha, stiker va tugma
+ *                     shunda: baqiradigan ovoz.
+ *   Playfair 800    — yuqori kontrastli serif. FAQAT oq kartochka ichida:
+ *                     u yerda ovoz o'zgaradi, «e'lon» dan «ko'rsatma» ga
+ *                     o'tadi. Ikkinchi shriftsiz kartochka shunchaki
+ *                     kichikroq sarlavhaga o'xshab qolardi.
  */
-const body = Inter({
+const display = Montserrat({
   subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--f5-body',
+  weight: ['700', '800'],
+  style: ['normal', 'italic'],
+  variable: '--f5-display',
   display: 'swap',
 });
 
-const hand = Caveat({
+const serif = Playfair_Display({
   subsets: ['latin'],
-  weight: ['500', '700'],
-  variable: '--f5-hand',
+  weight: ['700', '800'],
+  variable: '--f5-serif',
   display: 'swap',
 });
 
 export default function VariantFiveLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`${body.variable} ${hand.variable}`}>{children}</div>;
+  return <div className={`${display.variable} ${serif.variable}`}>{children}</div>;
 }

@@ -1,318 +1,289 @@
 /* ==========================================================================
-   Variant 5 — «Qo'lyozma» (dizayn kanvasidagi 16-ekran)
+   Variant 5 — «Yashil stiker»
 
-   Yondashuv: BREND emas, ODAM. Lentada hamma narsa jilolangan reklama —
-   shuning uchun eng kam «reklama»ga o'xshaydigan narsa ko'proq to'xtatadi:
-   katak daftar varag'i, ruchka bilan yozilgan gap, marker bilan aylantirib
-   qo'yilgan summa va skotch bilan yopishtirilgan qog'oz.
+   Manba story-kreativ: qop-qora fon, qiyshaygan salat rangli stiker, uch
+   qatorli og'ir sarlavha, oq kartochka (ortida siljigan salat soya),
+   pastda to'liq enli salat tugma.
 
-   Qo'l harflari FAQAT gapirayotgan ovozga tegishli (sarlavha, chetdagi
-   izohlar, ro'yxat). Raqamlar, tugmalar va mayda matn bosma shriftda
-   qoladi: qo'lyozma o'qishni qiyinlashtirmasligi kerak.
+   Ranglar kreativdan piksel bo'yicha olingan:
+     fon    #070805 (burchaklarda #050606)
+     salat  #b9fd50
+     karta  #ffffff
 
-   Skelet `components/landing/adscreen.module.css` da; chap chekka shu
-   yerda kengaytiriladi (`--ad-pad-left`) — qizil hoshiya uchun joy.
+   UCH QOIDA:
 
-   Kontrast (fon #fbfaf3): ink #23231f 15:1 · dim #6d6b62 5.6:1 ·
-   pen #1c3f8f 9.6:1 · oq matn pen ustida 9.6:1.
+   1. SALAT — FAQAT HARAKAT VA URG'U. Stiker (narx), kartochka soyasi,
+      bot manzili va tugma. Oddiy matn hech qachon salat bo'lmaydi, aks
+      holda tugma ko'zga tashlanmay qoladi.
+   2. QIYSHIQLIK KICHIK. Stiker −3.4°, kartochka −0.6°. Kattaroq burchak
+      «yopishtirilgan» emas, «buzilgan» taassurot beradi.
+   3. RADIUS QO'LDA. `globals.css` da `* { border-radius: 0 }` reseti bor.
+
+   Kontrast (fon #070805): oq sarlavha 19:1 · salat #b9fd50 15:1 ·
+   qora matn salat tugmada 15:1 · qora matn oq kartochkada 20:1.
    ========================================================================== */
 
-.page {
-  --ad-sans: var(--f5-body);
-  --hand: var(--f5-hand), 'Segoe Script', cursive;
+.screen {
+  --bg: #070805;
+  --lime: #b9fd50;
+  --lime-d: #a4e83c;
+  --ink: #ffffff;
 
-  --paper: #fbfaf3;
-  --grid: #d6e4f0;
-  --marg: #e8a9a9;
-  --pen: #1c3f8f;
-  --ink: #23231f;
-  --dim: #6d6b62;
-  --marker: #ffd23f;
-  --tape: rgba(214, 206, 180, 0.72);
-
-  /* Qizil hoshiyaning o'ng tomonida yoziladi */
-  --ad-pad-left: 40px;
-
-  background: var(--paper);
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: max(14px, env(safe-area-inset-top)) 18px max(12px, env(safe-area-inset-bottom));
+  background: var(--bg);
   color: var(--ink);
+  font-family: var(--f5-display), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Katak — ikki yo'nalishdagi chiziqlar */
-.bg {
+.screen :focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
+/* Pastdagi salat yog'du — kreativda tugma ortida turadi */
+.glow {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background-image: repeating-linear-gradient(180deg, transparent 0 27px, var(--grid) 27px 28px),
-    repeating-linear-gradient(90deg, transparent 0 27px, var(--grid) 27px 28px);
-  opacity: 0.65;
+  pointer-events: none;
+  background: radial-gradient(58% 26% at 50% 99%, rgba(185, 253, 80, 0.26), transparent 72%),
+    radial-gradient(70% 30% at 50% 2%, rgba(185, 253, 80, 0.08), transparent 70%);
 }
 
-/* Qizil hoshiya */
-.marg {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 30px;
-  width: 1.5px;
+.wrap {
+  position: relative;
   z-index: 1;
-  background: var(--marg);
-  opacity: 0.8;
-}
-
-/* ── Header ── */
-
-.head {
-  align-items: baseline;
-}
-
-.brand {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
 }
 
-.mark {
-  width: 26px;
-  height: 26px;
-  flex: none;
-  display: grid;
-  place-items: center;
+/* ── Stiker ──
+   Kengligi matnga qarab emas, blokka qarab: kreativda u ekranning deyarli
+   butun enini egallaydi va chetidan chiqib turadi. */
+
+.sticker {
+  align-self: stretch;
+  margin: clamp(6px, 2vh, 16px) -6px 0;
+  padding: clamp(11px, 3vw, 15px) 18px;
+  border-radius: 14px;
+  background: var(--lime);
+  color: #0a0c06;
+  font-size: clamp(17px, 5.2vw, 22px);
+  font-weight: 800;
+  font-style: italic;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-align: center;
+  transform: rotate(-3.4deg);
+  box-shadow: 0 10px 30px rgba(185, 253, 80, 0.18);
 }
 
-.markImg {
-  width: 22px;
-  height: 22px;
-}
-
-.date {
-  font-family: var(--hand);
-  font-size: 20px;
-  color: var(--pen);
+.sticker b {
+  font-weight: 800;
   white-space: nowrap;
 }
 
-/* ── Qo'l yozuvi ── */
+/* ── Sarlavha ── */
 
 .title {
-  font-family: var(--hand);
-  font-size: clamp(34px, 11.2vw, 48px);
-  line-height: 1.02;
-  font-weight: 700;
-  color: var(--pen);
-  letter-spacing: 0.005em;
+  margin-top: clamp(16px, 4vh, 30px);
+  font-size: clamp(30px, 9.4vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.032em;
+  text-wrap: balance;
 }
 
-/* Marker bilan aylantirib qo'yilgan summa */
-.ring {
-  position: relative;
-  display: inline-block;
+/* «Yagona Bot!» ikkiga bo'linmasin — kreativdagi urg'u shu ikki so'zda */
+.nowrap {
   white-space: nowrap;
 }
 
-.ring svg {
-  position: absolute;
-  left: -10px;
-  top: -8px;
-  width: calc(100% + 20px);
-  height: calc(100% + 16px);
-  fill: none;
-  stroke: var(--marker);
-  stroke-width: 3.4;
-  stroke-linecap: round;
-  pointer-events: none;
-}
+/* ── Oq kartochka ──
+   Ortidagi salat qatlam — alohida element emas, ikkinchi soya: shunda
+   burchaklar bir xil yumaloq bo'ladi va qatlam qiyshayganda ham ergashadi. */
 
-.sub {
-  margin-top: 10px;
-  font-size: 14.5px;
-  line-height: 1.55;
-  color: var(--dim);
-  max-width: 21em;
-}
-
-/* ── Skotch bilan yopishtirilgan qog'oz ── */
-
-.taped {
-  position: relative;
-  margin-top: 16px;
-  align-self: flex-start;
+.card {
+  margin-top: clamp(16px, 4vh, 30px);
+  padding: clamp(18px, 5vw, 26px) clamp(16px, 4.6vw, 24px) clamp(15px, 4vw, 22px);
+  border-radius: 18px;
   background: #fff;
-  border: 1px solid #e6e2d6;
-  border-radius: 3px;
-  padding: 11px 16px 10px;
-  transform: rotate(-1.4deg);
-  box-shadow: 0 8px 18px rgba(35, 35, 31, 0.1);
+  color: #0a0c06;
+  text-align: center;
+  transform: rotate(-0.6deg);
+  box-shadow: 14px 14px 0 0 var(--lime);
 }
 
-.tape {
-  position: absolute;
-  width: 62px;
-  height: 20px;
-  background: var(--tape);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
-}
-
-.t1 {
-  top: -10px;
-  left: -14px;
-  transform: rotate(-24deg);
-}
-
-.t2 {
-  top: -10px;
-  right: -14px;
-  transform: rotate(21deg);
-}
-
-.tT {
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-
-.tN {
-  margin-top: 3px;
-  font-size: 25px;
+.cardT {
+  font-family: var(--f5-serif), Georgia, serif;
+  font-size: clamp(19px, 5.6vw, 25px);
   font-weight: 800;
-  letter-spacing: -0.03em;
-  color: #177a45;
-  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
-.tS {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--dim);
-}
-
-/* ── Ro'yxat ── */
-
-.list {
-  margin-top: 14px;
-  display: grid;
-  gap: 7px;
-}
-
-.list li {
+/* Bot manzili — kartochka ichidagi salat plita. Bu HAVOLA: ekranda
+   ko'rinib turgan manzil bosiladigan ham bo'lishi kerak. */
+.pill {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
-  font-family: var(--hand);
-  font-size: 20px;
-  color: var(--ink);
+  margin-top: clamp(12px, 3.4vw, 18px);
+  min-height: 52px;
+  padding: 0 16px;
+  border-radius: 13px;
+  background: var(--lime);
+  color: #0a0c06;
+  font-size: clamp(15px, 4.4vw, 19px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  transition: background-color 0.12s ease;
 }
 
-.tick {
-  flex: none;
+.pill:active {
+  background: var(--lime-d);
+}
+
+.pillIcon {
   display: grid;
   place-items: center;
-  color: #177a45;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background: #229ed9;
+  color: #fff;
 }
 
-/* Qo'lda chizilgan strelka — tugmaga ishora */
+/* ── Strelka ──
+   Kreativda kartochkadan tugmaga ishora qiladi. O'ngda, chunki chapda
+   kartochkaning salat soyasi turadi. */
+
 .arrow {
-  margin: 2px 0 -8px 12px;
-  width: 42px;
-  height: 44px;
+  /* Ortiqcha bo'shliq SHU YERDA yig'iladi, tugma ustida emas: kreativda
+     strelka tugmaga ishora qiladi va unga yaqin turadi. `auto` `.cta` da
+     bo'lganda strelka kartochkaga yopishib, tugmagacha 400px bo'sh joy
+     qolardi. */
+  margin-top: auto;
+  align-self: flex-end;
+  width: clamp(40px, 12vw, 58px);
+  height: auto;
+  margin-right: clamp(4px, 4vw, 22px);
+  margin-bottom: clamp(2px, 1vh, 8px);
   fill: none;
-  stroke: var(--pen);
-  stroke-width: 3;
+  stroke: #fff;
+  stroke-width: 7;
   stroke-linecap: round;
   stroke-linejoin: round;
-  opacity: 0.85;
+  opacity: 0.92;
 }
 
-/* ── Tugmalar: ruchka bilan chizilgan quti ──
-   Burchaklar ATAYIN teng emas — chizilgan chiziq hech qachon ideal
-   bo'lmaydi. `.page` prefiksi umumiy skeletdagi `.btn` ni bosib o'tadi. */
+/* ── Pastki harakat zonasi ── */
 
-.page .primary,
-.page .ghost {
-  font-size: 17.5px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  border-radius: 232px 16px 244px 18px / 18px 236px 16px 248px;
+.cta {
+  padding-top: 0;
+  display: grid;
+  gap: clamp(10px, 2vh, 14px);
 }
 
-.page .primary {
-  background: var(--pen);
-  color: #fff;
-  transform: rotate(-0.5deg);
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 62px;
+  padding: 0 20px;
+  border-radius: 14px;
+  background: var(--lime);
+  color: #0a0c06;
+  font-size: clamp(16px, 4.6vw, 19px);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 14px 38px rgba(185, 253, 80, 0.3);
+  transition: transform 0.12s ease, background-color 0.12s ease;
 }
 
-.page .ghost {
-  background: transparent;
-  color: var(--pen);
-  border: 2.5px solid var(--pen);
-  transform: rotate(0.4deg);
-}
-
-.page .primary:active,
-.page .ghost:active {
+.btn:active {
   transform: scale(0.98);
-}
-
-.page .note {
-  font-family: var(--hand);
-  font-size: 16px;
-  color: var(--dim);
+  background: var(--lime-d);
 }
 
 /* ── Taymer ──
-   Bu sahifada quti YO'Q: daftar varag'iga ruchka bilan yozilgan raqam
-   qutida turmaydi. Kataklarni katakli fon o'zi ajratib turadi, raqam
-   esa qo'l shriftida va ruchka rangida. */
+   Qora fonda salat raqamlar; katak chegarasi deyarli ko'rinmas, chunki
+   ekranda allaqachon ikkita salat plita bor va uchinchisi ortiqcha. */
 
 .cd {
-  margin-top: 14px;
+  margin-top: 0;
 }
 
-.cdLead {
-  font-family: var(--hand);
-  font-size: 16px;
-  color: var(--dim);
+.cdTop {
+  margin-bottom: clamp(10px, 2.5vh, 18px);
 }
 
 .cdCell {
-  padding-top: 4px;
-  padding-bottom: 2px;
+  padding: 6px 2px 5px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(185, 253, 80, 0.22);
 }
 
 .cdNum {
-  font-family: var(--hand);
-  font-size: clamp(26px, 8vw, 34px);
-  font-weight: 700;
-  color: var(--pen);
-  /* Qo'l yozuvida bir tekis kenglik sun'iy ko'rinadi */
-  font-variant-numeric: normal;
+  font-size: clamp(18px, 5.4vw, 22px);
+  color: var(--lime);
 }
 
 .cdLab {
-  font-family: var(--hand);
-  font-size: clamp(12px, 3.4vw, 14px);
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--dim);
+  color: rgba(255, 255, 255, 0.55);
 }
 
-.cdNote {
-  font-family: var(--hand);
-  font-size: 15px;
-  color: var(--dim);
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .pill {
+    transition: none;
+  }
 }
 
-/* Bitta ekranli kadr uchun ixcham o'lchov — skeletnikidan past */
-.cdCell {
-  padding: 7px 2px 5px;
-}
+/* Past bo'yli ekranlar (320×568 kabi) — kadr baribir bitta ekranga sig'sin */
+@media (max-height: 620px) {
+  .sticker {
+    padding: 9px 14px;
+    font-size: 16px;
+  }
 
-.cdNum {
-  font-size: clamp(19px, 5.7vw, 23px);
+  .title {
+    margin-top: 12px;
+    font-size: 27px;
+  }
+
+  .card {
+    margin-top: 12px;
+    padding: 14px 14px 12px;
+  }
+
+  .cardT {
+    font-size: 17px;
+  }
+
+  .pill {
+    margin-top: 10px;
+    min-height: 46px;
+    font-size: 14px;
+  }
+
+  .btn {
+    min-height: 54px;
+  }
 }

@@ -31,7 +31,7 @@ export const LANDINGS: Landing[] = [
   { path: '/2', name: 'Variant 2 — «Moviy»', slug: 'v2', note: 'Reklama ekrani' },
   { path: '/3', name: 'Variant 3 — «Karta»', slug: 'v3', note: 'Reklama ekrani' },
   { path: '/4', name: 'Variant 4 — «Hisob»', slug: 'v4', note: 'Hisoblagichli ekran' },
-  { path: '/5', name: 'Variant 5 — «Qo‘lyozma»', slug: 'v5', note: 'Daftar varag‘i' },
+  { path: '/5', name: 'Variant 5 — «Yashil stiker»', slug: 'v5', note: 'Qora fon, salat stiker' },
   { path: '/6', name: 'Variant 6 — «Sumka plakati»', slug: 'v6', note: 'Tayyor rasm plakat' },
   { path: '/7', name: 'Variant 7 — «Open Budjet plakati»', slug: 'v7', note: 'Rasm plakat' },
   { path: '/8', name: 'Variant 8 — «Neon»', slug: 'v8', note: 'Aksiya ekrani, taymerli' },

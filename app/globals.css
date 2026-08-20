@@ -552,11 +552,17 @@ body:has(.doc-night) {
   background: #0c0e12;
 }
 
+html:root:has(.doc-lime),
+body:has(.doc-lime) {
+  background: #070805;
+}
+
 html:root:has(.doc-blue),
 html:root:has(.doc-navy),
 html:root:has(.doc-ob),
 html:root:has(.doc-neon),
-html:root:has(.doc-night) {
+html:root:has(.doc-night),
+html:root:has(.doc-lime) {
   color-scheme: dark;
 }
 
