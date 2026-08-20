@@ -218,22 +218,6 @@ export default async function VariantNeon() {
         />
       </main>
 
-      {/* ── Variant almashtirgich: A/B ni qo'lda solishtirish uchun ── */}
-      <nav className={c.switcher} aria-label="Dizayn variantlari">
-        <a href="/1" className={c.swOn} aria-current="page">
-          1
-        </a>
-        <a href="/2">2</a>
-        <a href="/3">3</a>
-        <a href="/4">4</a>
-        <a href="/5">5</a>
-        <a href="/6">6</a>
-        <a href="/7">7</a>
-        <a href="/8">8</a>
-        <a href="/9">9</a>
-        <a href="/l">asl</a>
-      </nav>
-
       <Tracker />
 
       {/* Strukturali ma'lumot — statik HTML ichida, qo'shimcha so'rovsiz */}

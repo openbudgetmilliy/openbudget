@@ -99,59 +99,6 @@
   line-height: 1.45;
 }
 
-/* ── Variant almashtirgich ──
-   Bitta ekranli sahifada pastki-o'ng burchak CTA tugmalaridan yuqorida
-   qoladi (`.cta` ning 5vh chekinishi tufayli), shuning uchun bu yerda
-   ham pastda — qolgan variantlar bilan bir xil joyda. */
-
-.switcher {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  z-index: 40;
-  display: flex;
-  gap: 3px;
-  padding: 4px;
-  background: rgba(20, 23, 28, 0.82);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  max-width: calc(100vw - 24px);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-
-.switcher::-webkit-scrollbar {
-  display: none;
-}
-
-.switcher a {
-  display: grid;
-  place-items: center;
-  min-width: 30px;
-  height: 30px;
-  padding: 0 8px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.66);
-  transition: color 0.15s ease, background-color 0.15s ease;
-}
-
-.switcher a:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.swOn,
-.switcher a.swOn,
-.switcher a.swOn:hover {
-  color: #14171c;
-  background: #fff;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .btn {
     transition: none;

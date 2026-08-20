@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
 import Logo from '@/components/Logo';
-import AdSwitcher from '@/components/landing/AdSwitcher';
 
 import { getSettings } from '@/lib/data';
 import { SITE } from '@/lib/content';
@@ -158,7 +157,6 @@ export default async function VariantHisob() {
         </div>
       </div>
 
-      <AdSwitcher current="4" />
       <Tracker />
     </div>
   );
