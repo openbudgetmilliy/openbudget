@@ -4,10 +4,12 @@ import Tracker from '@/components/Tracker';
 import MetaPixel from '@/components/MetaPixel';
 
 import Countdown from '@/components/landing/Countdown';
+import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
 import { CAMPAIGN, campaignLeft, deadlineLabel } from '@/lib/campaign';
 import { liveStats } from '@/lib/landing-sections';
+import { SITE } from '@/lib/content';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -95,14 +97,23 @@ export default async function VariantNeon() {
       <div className={c.sky} aria-hidden />
 
       <main className={c.wrap}>
-        <h1 className={c.title}>
-          Ovoz bering va <span className={c.grad}>{CAMPAIGN.ceiling}</span> pul oling
-        </h1>
+        <header className={c.head}>
+          <div className={c.brandRow}>
+            <span className={c.mark}>
+              <Logo size={28} className={c.markImg} />
+            </span>
+            <span className={c.brand}>{SITE.brand}</span>
+          </div>
 
-        <p className={c.sub}>
-          Open Budgetga ovoz berib {CAMPAIGN.ceiling} pul oling. Undan tashqari{' '}
-          {CAMPAIGN.prize} g‘olibiga ham aylanishingiz mumkin.
-        </p>
+          <h1 className={c.title}>
+            Ovoz bering va <span className={c.grad}>{CAMPAIGN.ceiling}</span> pul oling
+          </h1>
+
+          <p className={c.sub}>
+            Open Budgetga ovoz berib {CAMPAIGN.ceiling} pul oling. Undan tashqari{' '}
+            {CAMPAIGN.prize} g‘olibiga ham aylanishingiz mumkin.
+          </p>
+        </header>
 
         {cta('v8_hero')}
 
@@ -111,7 +122,6 @@ export default async function VariantNeon() {
         {open ? (
           <section className={c.card} aria-label="Ovoz berish muddati">
             <h2 className={c.h2}>Ovozingizni hoziroq bering</h2>
-            <p className={c.cardSub}>Ovoz berish tugashiga qolgan vaqt:</p>
 
             <Countdown
               initial={left}

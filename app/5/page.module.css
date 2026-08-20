@@ -198,6 +198,8 @@
 /* ── Pastki harakat zonasi ── */
 
 .cta {
+  margin-top: -18px;
+  margin-bottom: clamp(14px, 3.5vh, 28px);
   padding-top: 0;
   display: grid;
   gap: clamp(10px, 2vh, 14px);
