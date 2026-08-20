@@ -9,9 +9,8 @@
    takrorlab, uni ko'rinmas qilardi.
 
    Sahifa rasmga IKKI narsa qo'shadi:
-     1. NARX — TEPADA, brend tasmasi va plakat sarlavhasidan keyin. Shrift
-        bosma (Archivo), marker bilan aylantirilgan: bosma raqam + qo'lda
-        chizilgan halqa = ko'chadagi e'lon.
+     1. NARX — TEPADA, brend tasmasi va plakat sarlavhasidan keyin.
+        Bezaksiz: bosma shrift (Montserrat), yirik raqam, xolos.
      2. TUGMA — pastda, botga.
 
    Kontrast ikki xil hal qilinadi, chunki narx bilan tugma rasmning ikki
@@ -31,7 +30,7 @@
 
 .page {
   --ad-sans: var(--f7-body);
-  --display: var(--f7-display), 'Arial Narrow', sans-serif;
+  --display: var(--f7-display), 'Trebuchet MS', sans-serif;
 
   /* Plakatning ekrandagi kengligi — `.frame` va narx o'lchamlari shundan.
      Tor ekranda rasm kenglik bo'yicha to'ldiriladi; keng ekranda esa
@@ -40,7 +39,6 @@
 
   /* `doc-navy` html foni bilan bir xil — overscroll paytida chok ko'rinmasin */
   --night: #080d14;
-  --marker: #ffd23f;
   --ink: #08243a;
 
   background: var(--night);
@@ -167,8 +165,7 @@
   display: inline-flex;
   align-items: baseline;
   gap: 0.2em;
-  font-size: calc(var(--pw) * 0.125);
-  font-stretch: 88%;
+  font-size: calc(var(--pw) * 0.118);
   font-weight: 800;
   line-height: 1.02;
   letter-spacing: -0.02em;
@@ -178,44 +175,16 @@
 }
 
 .handCur {
-  font-size: 0.46em;
-  font-stretch: 100%;
-  font-weight: 600;
+  font-size: 0.44em;
+  font-weight: 700;
   color: rgba(255, 255, 255, 0.9);
 }
 
-.handNum {
-  position: relative;
-  display: inline-block;
-}
+/* Ekranda bosiladigan yagona narsa tugma: `.wrap` ni pastga bosamiz va
+   oraliqni bo'sh qoldiramiz — o'rtasi plakatga tegishli. */
 
-.ring {
-  position: absolute;
-  left: -0.16em;
-  top: -0.22em;
-  width: calc(100% + 0.32em);
-  height: calc(100% + 0.48em);
-  fill: none;
-  stroke: var(--marker);
-  stroke-width: 3.2;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
-/* ── Pastdagi izoh ──
-   `.mid` skeletda markazlashtirilgan; bu yerda pastga bosiladi — yuqorisi
-   plakatga tegishli. */
-
-.page .mid {
+.wrap {
   justify-content: flex-end;
-  padding-bottom: 18px;
-}
-
-.hint {
-  font-size: 14.5px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.82);
-  max-width: 20em;
 }
 
 /* ── Tugma ──

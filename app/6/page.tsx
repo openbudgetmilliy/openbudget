@@ -75,13 +75,7 @@ export default async function VariantPlakat() {
         <figcaption className={c.hand}>
           <span className={c.handTop}>har bir ovoz uchun</span>
           <span className={c.handSum}>
-            <span className={c.handNum}>
-              {s.price_one_vote}
-              {/* Marker halqasi — qo'lda aylantirilgandek, ideal ellips emas */}
-              <svg className={c.ring} viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden>
-                <path d="M186 16C160 5 96 2 46 9 10 14 4 34 22 46c24 15 102 17 152 8 19-4 26-13 14-22" />
-              </svg>
-            </span>
+            <span>{s.price_one_vote}</span>
             <span className={c.handCur}>so‘m</span>
           </span>
         </figcaption>

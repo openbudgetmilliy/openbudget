@@ -1,13 +1,18 @@
-import { Archivo, Inter } from 'next/font/google';
+import { Inter, Montserrat } from 'next/font/google';
 
 /**
  * Variant 7 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
  * u yerdagi oila BARCHA sahifalarga (jumladan `/l` va asosiy landing'ga)
  * preload bo'lib tushardi. Bu ikkisi faqat `/7` so'ralganda yuklanadi.
  *
- * `/6` bilan bir xil juftlik — ikkala plakat ekrani bitta tilda gapiradi:
- *   Archivo — narx (`wdth` o'qi: yorliq keng, raqam tor)
- *   Inter   — izoh, tugma, pastki qator
+ *   Montserrat — narx. Plakatning O'Z sarlavhasi («OPEN BUDJET BOSHLANDI»)
+ *                geometrik, keng va yumaloq uchli; Montserrat shu qurilishga
+ *                eng yaqin oila. Shu sabab narx rasmga yopishtirilgandek
+ *                emas, uning davomidek o'qiladi.
+ *   Inter      — izoh, tugma, pastki qator.
+ *
+ * `/6` da narx Archivo bilan teriladi — ikkalasi ikki xil plakat, ikki xil
+ * ovoz: bu yerda geometrik va keng, u yerda grotesk va tor.
  */
 const body = Inter({
   subsets: ['latin'],
@@ -16,9 +21,9 @@ const body = Inter({
   display: 'swap',
 });
 
-const display = Archivo({
+const display = Montserrat({
   subsets: ['latin'],
-  axes: ['wdth'],
+  weight: ['700', '800'],
   variable: '--f7-display',
   display: 'swap',
 });

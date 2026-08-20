@@ -43,7 +43,6 @@
   --pw: min(max(min(100vw, 520px), 56.28dvh), 117vw);
 
   --navy: #001426;
-  --marker: #ffd23f;
 
   background: var(--navy);
   color: #eaf3ff;
@@ -173,26 +172,6 @@
   font-stretch: 100%;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.88);
-}
-
-/* Halqa FAQAT raqam atrofida: qo'lda ham summa aylantiriladi, o'lchov
-   birligi emas. Bosma raqam + marker chizig'i = ko'chadagi e'lon. */
-.handNum {
-  position: relative;
-  display: inline-block;
-}
-
-.ring {
-  position: absolute;
-  left: -0.16em;
-  top: -0.22em;
-  width: calc(100% + 0.32em);
-  height: calc(100% + 0.48em);
-  fill: none;
-  stroke: var(--marker);
-  stroke-width: 3.2;
-  stroke-linecap: round;
-  pointer-events: none;
 }
 
 /* ── Pastki qorayish ──
