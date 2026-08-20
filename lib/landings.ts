@@ -35,6 +35,7 @@ export const LANDINGS: Landing[] = [
   { path: '/6', name: 'Variant 6 — «Sumka plakati»', slug: 'v6', note: 'Tayyor rasm plakat' },
   { path: '/7', name: 'Variant 7 — «Open Budjet plakati»', slug: 'v7', note: 'Rasm plakat' },
   { path: '/8', name: 'Variant 8 — «Neon»', slug: 'v8', note: 'Aksiya ekrani, taymerli' },
+  { path: '/9', name: 'Variant 9 — «Banknota»', slug: 'v9', note: 'Qora fon, 100 ming so‘mlik' },
 ];
 
 /** Kesh tozalash uchun — `lib/cf.ts` shu ro'yxatdan foydalanadi */

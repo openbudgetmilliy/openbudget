@@ -3,7 +3,7 @@ const nextConfig = {
   /**
    * O'CHIRILGAN VARIANTLAR — eski reklama havolalari o'lmasin.
    *
-   * `/1`, `/9` va `/l` olib tashlandi. Lekin ular reklama kabinetlarida,
+   * `/1` va `/l` olib tashlandi (`/9` keyinchalik qaytarildi). Lekin ular reklama kabinetlarida,
    * Instagram bio'sida va odamlarning saqlangan havolalarida qolib ketgan
    * bo'lishi mumkin — `/l` esa o'chirilgunga qadar ENG KO'P trafik olgan
    * sahifa edi (34 kirish). Ular 404 bersa, o'sha trafik shunchaki
@@ -19,7 +19,6 @@ const nextConfig = {
   async redirects() {
     return [
       { source: '/1', destination: '/', permanent: false },
-      { source: '/9', destination: '/', permanent: false },
       { source: '/l', destination: '/', permanent: false },
     ];
   },

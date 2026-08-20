@@ -547,10 +547,16 @@ body:has(.doc-neon) {
   background: #05060c;
 }
 
+html:root:has(.doc-night),
+body:has(.doc-night) {
+  background: #0c0e12;
+}
+
 html:root:has(.doc-blue),
 html:root:has(.doc-navy),
 html:root:has(.doc-ob),
-html:root:has(.doc-neon) {
+html:root:has(.doc-neon),
+html:root:has(.doc-night) {
   color-scheme: dark;
 }
 
