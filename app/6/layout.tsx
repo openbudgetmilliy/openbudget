@@ -1,13 +1,17 @@
-import { Caveat, Inter } from 'next/font/google';
+import { Archivo, Inter } from 'next/font/google';
 
 /**
  * Variant 6 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
  * u yerdagi oila BARCHA sahifalarga preload bo'lib tushardi.
  *
  * Ikkitasi, ikki vazifa:
- *   Caveat — rasm ustiga qo'lda yozilgan narx (faqat shu ikki qator)
- *   Inter  — tugma va uning ostidagi izoh; ular bosma bo'lib qolishi kerak,
- *            aks holda «bosiladigan narsa» ekani yo'qoladi.
+ *   Archivo — narx. `wdth` o'qi bilan: yorliq keng (108%), raqam tor (88%).
+ *             Bitta oila ichidagi shu qarama-qarshilik plakat tipografikasi
+ *             — `app/fonts.ts` dagi izohda batafsil.
+ *   Inter   — tugma va uning ostidagi izoh.
+ *
+ * Avval narx Caveat (qo'l yozuvi) edi; plakatning o'z sarlavhasi bosma
+ * bo'lgani uchun bosma shriftga o'tkazildi.
  */
 const body = Inter({
   subsets: ['latin'],
@@ -16,13 +20,13 @@ const body = Inter({
   display: 'swap',
 });
 
-const hand = Caveat({
+const display = Archivo({
   subsets: ['latin'],
-  weight: ['500', '700'],
-  variable: '--f6-hand',
+  axes: ['wdth'],
+  variable: '--f6-display',
   display: 'swap',
 });
 
 export default function VariantSixLayout({ children }: { children: React.ReactNode }) {
-  return <div className={`${body.variable} ${hand.variable}`}>{children}</div>;
+  return <div className={`${body.variable} ${display.variable}`}>{children}</div>;
 }

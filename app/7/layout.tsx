@@ -1,23 +1,24 @@
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Archivo, Inter } from 'next/font/google';
 
 /**
- * Variant 7 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas.
+ * Variant 7 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
+ * u yerdagi oila BARCHA sahifalarga (jumladan `/l` va asosiy landing'ga)
+ * preload bo'lib tushardi. Bu ikkisi faqat `/7` so'ralganda yuklanadi.
  *
- * `app/fonts.ts` root layout'ga ulangan: u yerga qo'shilgan har bir oila
- * BARCHA sahifalarga (jumladan `/l` va darvozaga) preload bo'lib tushardi.
- * Asosiy landing bitta Archivo bilan yashaydi, shuning uchun bu ikki oila
- * faqat `/7` so'ralganda yuklanadi.
+ * `/6` bilan bir xil juftlik — ikkala plakat ekrani bitta tilda gapiradi:
+ *   Archivo — narx (`wdth` o'qi: yorliq keng, raqam tor)
+ *   Inter   — izoh, tugma, pastki qator
  */
 const body = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   variable: '--f7-body',
   display: 'swap',
 });
 
-const display = Space_Grotesk({
+const display = Archivo({
   subsets: ['latin'],
-  weight: ['500', '700'],
+  axes: ['wdth'],
   variable: '--f7-display',
   display: 'swap',
 });

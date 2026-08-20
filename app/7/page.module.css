@@ -1,950 +1,236 @@
 /* ==========================================================================
-   Variant 7 — «Oltin tanga»
+   Variant 7 — «Plakat» (Open Budjet reklama rasmi)
 
-   Uslub manbasi: files/11-dostpul-referral.html. Undan FAQAT dizayn tili
-   olingan: to'q zumrad fon, oltin-gradient urg'u, shisha panellar.
+   Yondashuv: sahifa dizayn QILMAYDI, u tayyor plakatni ko'rsatadi.
+   Butun ekran — bitta rasm (`public/open-budjet-fon.webp`): Milliy belgisi,
+   «OPEN BUDJET BOSHLANDI» sarlavhasi, arqonga bog'langan pul dastalari va
+   pulga ishora qilayotgan strelka. Rasmda hammasi bor, shuning uchun
+   sahifada header ham, matn bloklari ham YO'Q — ular faqat plakatni
+   takrorlab, uni ko'rinmas qilardi.
 
-   To'rt ustun (buzilsa uslub yo'qoladi):
+   Sahifa rasmga IKKI narsa qo'shadi:
+     1. NARX — TEPADA, brend tasmasi va plakat sarlavhasidan keyin. Shrift
+        bosma (Archivo), marker bilan aylantirilgan: bosma raqam + qo'lda
+        chizilgan halqa = ko'chadagi e'lon.
+     2. TUGMA — pastda, botga.
 
-   1. TO'Q ZUMRAD FON, SHISHA PANEL. Fon deyarli qora yashil (#04110B);
-      har bir karta shu fondan bir pog'ona ochroq, shaffof va blur'langan
-      "shisha" (backdrop-filter). Qattiq oq karta yo'q.
-   2. OLTIN GRADIENT — YAGONA KUCHLI URG'U. Asosiy CTA va katta raqamlar
-      #FFE9A8 → #F5C242 → #CA8A04 gradientda. Boshqa hech narsa bu
-      gradientni ishlatmaydi — aks holda urg'u yo'qoladi.
-   3. ZUMRAD — IKKINCHI DARAJALI TASDIQ RANGI. Faqat jonli nuqta va
-      tekshiruv belgilarida (#10B981) — "faol, ishonchli" signali.
-   4. SPACE GROTESK SARLAVHALAR, INTER MATN. Sarlavha 700 og'irlik, matn
-      esa 400/1.6 — Inter juda o'qilishi oson, shuning uchun katta hajmli
-      izohlarda ham charchatmaydi.
+   Kontrast ikki xil hal qilinadi, chunki narx bilan tugma rasmning ikki
+   xil joyida turadi:
+     · TUGMA pastda — `.veil` o'sha yerni tunga aylantiradi (14:1 dan yuqori).
+     · NARX tepada — parda yo'q, rasm ochiq ko'rinadi. Uning o'rni O'LCHAB
+       tanlangan: 28.5%..39% balandlikda, chapdan 28% dan boshlab. Sabab —
+       oq diagonal chap pastdan kirib keladi va balandlik bo'yicha o'ngga
+       suriladi: 31% da u 11% ga, 39% da esa 27% ga yetadi. Blok undan
+       o'ngda turadi, ya'ni raqam ostidagi fon hamma joyda 3:1 dan quyuq
+       (raqam qalin va 50px+ — «katta matn» chegarasi), yorliq esa 5:1 dan
+       yuqori zonada. 26.5% sinab ko'rildi — u plakat sarlavhasiga tegib
+       turardi.
 
-   Kontrast (WCAG AA, fon #04110B):
-     ink #EDF7F0 → ~17:1        dim #8FB3A0 → ~8.5:1
-     oltin gradient tugmada matn #2A1E03 (TO'Q) — och oltin fonda oq emas,
-     qorong'i matn ishlatiladi, aks holda oq oltin ustida 1.6:1 bo'lardi.
+   Skelet `components/landing/adscreen.module.css` da.
    ========================================================================== */
 
 .page {
-  --bg: #04110b;
-  --panel: rgba(9, 26, 18, 0.72);
-  --panel-line: rgba(255, 255, 255, 0.09);
-  --ink: #edf7f0;
-  --dim: #8fb3a0;
-  --em: #10b981;
-  --gold: #f5c242;
-  --gold-d: #ca8a04;
-  --gold-l: #ffe9a8;
-  --line: rgba(245, 194, 66, 0.18);
-  --grad-gold: linear-gradient(120deg, var(--gold-l), var(--gold) 45%, var(--gold-d));
-  --r: 18px;
+  --ad-sans: var(--f7-body);
+  --display: var(--f7-display), 'Arial Narrow', sans-serif;
 
-  --f-b: var(--f7-body), ui-sans-serif, system-ui, sans-serif;
-  --f-d: var(--f7-display), ui-sans-serif, system-ui, sans-serif;
+  /* Plakatning ekrandagi kengligi — `.frame` va narx o'lchamlari shundan.
+     Tor ekranda rasm kenglik bo'yicha to'ldiriladi; keng ekranda esa
+     balandlik bo'yicha (`contain`), ya'ni eni balandlikdan kelib chiqadi. */
+  --pw: 100vw;
 
-  position: relative;
-  min-height: 100svh;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--f-b);
-  font-size: 16px;
-  line-height: 1.65;
-  overflow-x: clip;
+  /* `doc-navy` html foni bilan bir xil — overscroll paytida chok ko'rinmasin */
+  --night: #080d14;
+  --marker: #ffd23f;
+  --ink: #08243a;
+
+  background: var(--night);
+  color: #fff;
 }
 
-.page :focus-visible {
-  outline: 2px solid var(--gold);
-  outline-offset: 3px;
-  border-radius: 8px;
-}
+/* ── Fon: plakatning o'zi ── */
 
-.page ::selection {
-  background: var(--gold);
-  color: #221802;
-}
-
-/* ── Fon: manbadagi haqiqiy 3D tanga yomg'iri ──
-   `position: fixed` — manbadagidek: fon skroll bilan siljimaydi, kontent
-   esa uning ustidan o'tadi. Ikki qatlam: WebGL canvas (`CoinRain.tsx`,
-   z-index 0) + `.veil` (z-index 1) — kontent zonasi tomon asta
-   qorong'ilashadigan gradient, matn har doim o'qilishi uchun. Ikkalasi
-   ham sahifaning barcha `z-index: 1` o'lchagichlaridan pastda qoladi. */
-
-.bgFixed {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
-
-.coinsCanvas {
+.bg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
+  z-index: 0;
+  background-image: url('/open-budjet-fon.webp');
+  background-repeat: no-repeat;
+
+  /* Telefonda plakat KENGLIK bo'yicha to'ldiriladi va yuqoriga tekislanadi.
+     `cover` ATAYIN emas: telefon rasmdan torroq (9:19.5 va 9:16), shuning
+     uchun u chetlarni qirqib, «OPEN BUDJET BOSHLANDI» sarlavhasining yarmini
+     yeb qo'yardi. Bu yerda esa plakat butunligicha ko'rinadi, pastda qolgan
+     bo'sh joy tungi fon bo'lib qoladi — narx va tugma o'sha yerda. */
+  background-position: center top;
+  background-size: 100% auto;
 }
 
+/* Kompyuterda oyna rasmdan kengroq — `100% auto` uni balandligi bo'yicha
+   ekrandan chiqarib yuborardi. Bunday ekranda plakat balandlik bo'yicha
+   o'lchanadi, ikki chetida tungi fon qoladi (941/1672 — manba nisbati). */
+@media (min-aspect-ratio: 941 / 1672) {
+  .bg {
+    background-position: center;
+    background-size: contain;
+  }
+
+  .page {
+    --pw: calc(100dvh * 0.5628);
+  }
+}
+
+/* Pastki qismni quyuqlashtiruvchi parda — tugma va uning ustidagi izoh uchun.
+   To'xtashlar FOIZDA emas, PASTDAN PIKSELDA: tugma ham pastga bog'langan,
+   ya'ni ekran balandligidan qat'i nazar parda aynan o'sha zonani qoplaydi.
+   Foizda yozilganda past ekranda (640px) parda tugmadan pastroqqa tushib
+   qolardi va oq harflar ochiq banknota ustida yo'qolardi. */
 .veil {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(900px 500px at 50% 0%, rgba(16, 185, 129, 0.1), transparent 60%),
-    linear-gradient(180deg, rgba(4, 17, 11, 0.42), rgba(4, 17, 11, 0.78) 60%, rgba(4, 17, 11, 0.92));
+  background: linear-gradient(
+    to top,
+    var(--night) 0,
+    rgba(8, 13, 20, 0.96) 110px,
+    rgba(8, 13, 20, 0.82) 210px,
+    rgba(8, 13, 20, 0.5) 290px,
+    rgba(8, 13, 20, 0) 400px
+  );
 }
 
-/* WebGL ishlamasa (`CoinRain` canvas o'rniga shuni qaytaradi) yoki
-   qurilma juda zaif bo'lsa — sekin rang siljishi hech bo'lmasa fonni
-   jonli tutib turadi. Sof CSS, hech qanday chizishga muhtoj emas.
-   `.coinsCanvas` bilan bir xil joyni egallaydi — `.bgFixed` ichida. */
-.bgFixedNoGl {
+/* ── Narx: plakatning tepasida ──
+   `.frame` fon rasmi bilan AYNI o'lchamdagi shaffof quti. Uning ichidagi
+   foizlar rasmdagi joylarga to'g'ri keladi, ya'ni yozuv ekran o'lchami
+   o'zgarganda ham plakatdan siljimaydi. */
+
+.frame {
   position: absolute;
-  inset: 0;
-  animation: hue 14s ease-in-out infinite alternate;
-  background: linear-gradient(160deg, var(--bg), #0a2a1c, #123);
-  background-size: 200% 200%;
-}
-
-@keyframes hue {
-  to {
-    background-position: 100% 100%;
-  }
-}
-
-/* ── Umumiy o'lchagich ── */
-
-.hdrIn,
-.heroIn,
-.statsIn,
-.secIn,
-.finaleIn,
-.footIn {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1080px;
-  margin: 0 auto;
-  padding-left: clamp(18px, 4vw, 24px);
-  padding-right: clamp(18px, 4vw, 24px);
-}
-
-/* ── Tugmalar ── */
-
-.btnG,
-.btnO,
-.btnSm {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  line-height: 1;
-  border-radius: 14px;
-  white-space: nowrap;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background-color 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.btnG {
-  background: var(--grad-gold);
-  color: #2a1e03;
-  padding: clamp(15px, 2.4vw, 17px) clamp(24px, 3.4vw, 28px);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.btnG:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 14px 36px rgba(245, 194, 66, 0.35);
-}
-
-.btnO {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  color: var(--ink);
-  padding: clamp(15px, 2.4vw, 17px) clamp(22px, 3vw, 26px);
-}
-
-.btnO:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.btnSm {
-  background: var(--grad-gold);
-  color: #2a1e03;
-  padding: 11px 20px;
-  font-size: 0.8438rem;
-  font-weight: 700;
-}
-
-.btnSm:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 26px rgba(245, 194, 66, 0.35);
-}
-
-/* ── Header ── */
-
-.hdr {
-  position: sticky;
   top: 0;
-  z-index: 30;
-  background: rgba(4, 17, 11, 0.68);
-  -webkit-backdrop-filter: blur(14px);
-  backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  width: var(--pw);
+  aspect-ratio: 941 / 1672;
+  pointer-events: none;
 }
 
-.hdrIn {
-  height: 66px;
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 3vw, 30px);
-}
-
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  flex: none;
-  min-height: 36px;
-}
-
-/* Belgi gradienti to'q fonda dog' bo'ladi — shuning uchun oq/oltin plitka */
-.brandTile {
+.hand {
+  position: absolute;
+  top: 28.5%;
+  left: 28%;
+  right: 4%;
   display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  flex: none;
-  background: #fff;
-  border-radius: 9px;
-  box-shadow: 0 0 0 1px rgba(245, 194, 66, 0.3);
+  justify-items: start;
+  gap: calc(var(--pw) * 0.016);
+  font-family: var(--display);
+  text-shadow: 0 2px 14px rgba(6, 20, 34, 0.7);
 }
 
-.brandMark {
-  width: 22px;
-  height: 22px;
+/* Narx zonasining yuvig'i — `/6` da bunday narsa yo'q, chekki fon u yerda
+   bir tekis to'q ko'k. Bu yerda esa plakatning eng yorug' joyi (3.5:1)
+   yorliqning o'ng uchi ostiga tushadi va WCAG chegarasidan o'tmaydi.
+
+   Nima uchun BUTUN ENIGA cho'zilgan: matn atrofidagi ellips sinab ko'rildi
+   — u ekranda quyuq to'rtburchak dog' bo'lib ko'rindi, chunki chetlari
+   qirqilardi. Yon qirralari yo'q, faqat tepa va pastdan so'nadigan yuvuq
+   esa pastdagi parda bilan bitta til: plakat ikki tomondan bosilgan,
+   o'rtasi ochiq. */
+.wash {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 23%;
+  height: 24%;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    rgba(6, 20, 34, 0) 0%,
+    rgba(6, 20, 34, 0.55) 26%,
+    rgba(6, 20, 34, 0.74) 50%,
+    rgba(6, 20, 34, 0.55) 78%,
+    rgba(6, 20, 34, 0) 100%
+  );
 }
 
-.brandName {
-  font-family: var(--f-d);
+.handTop {
+  font-size: calc(var(--pw) * 0.048);
+  font-stretch: 108%;
   font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: -0.005em;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.handSum {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.2em;
+  font-size: calc(var(--pw) * 0.125);
+  font-stretch: 88%;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
   white-space: nowrap;
 }
 
-.hdrNav {
-  display: none;
-  align-items: center;
-  gap: clamp(16px, 2.2vw, 26px);
-  font-size: 0.9375rem;
-  color: var(--dim);
-  margin-left: 8px;
-}
-
-.hdrNav a {
-  padding: 8px 0;
-}
-
-.hdrNav a:hover {
-  color: var(--ink);
-}
-
-.hdr .btnSm {
-  margin-left: auto;
-}
-
-/* ── Hero ── */
-
-.hero {
-  position: relative;
-  z-index: 1;
-  padding: clamp(56px, 10vh, 100px) 0 clamp(40px, 6vh, 72px);
-}
-
-.heroIn {
-  display: grid;
-  gap: clamp(34px, 5vw, 56px);
-  align-items: center;
-}
-
-.heroCopy {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: clamp(16px, 2.4vh, 22px);
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border-radius: 999px;
-  border: 1px solid var(--line);
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  font-size: 0.8125rem;
-  color: var(--dim);
-}
-
-.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #34d399;
-  box-shadow: 0 0 8px #34d399;
-  animation: blink 1.8s ease-in-out infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.35;
-  }
-}
-
-.title {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(2.5rem, 8vw, 4.6rem);
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-}
-
-.titleHl {
-  color: transparent;
-  background: linear-gradient(110deg, var(--gold-l), var(--gold) 50%, #e09b0c);
-  -webkit-background-clip: text;
-  background-clip: text;
-  filter: drop-shadow(0 4px 24px rgba(245, 194, 66, 0.3));
-}
-
-.sub {
-  color: var(--dim);
-  font-size: clamp(0.9375rem, 2.2vw, 1.0625rem);
-  line-height: 1.65;
-  max-width: 46ch;
-}
-
-.heroAct {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.pay {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.pay li {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.04);
-  font-size: 0.8438rem;
-  color: var(--dim);
-}
-
-.pay svg {
-  color: var(--em);
-  flex: none;
-}
-
-/* ── Narx paneli: manbadagi shisha "link" qutisi ── */
-
-.priceCard {
-  position: relative;
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  padding: clamp(24px, 4vw, 36px);
-  text-align: center;
-}
-
-.priceLab {
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--dim);
-  margin-bottom: 8px;
-}
-
-.priceFig {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  gap: 0 10px;
-  flex-wrap: wrap;
-}
-
-.priceNum {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(3rem, 9vw, 4.6rem);
-  line-height: 1;
-  color: transparent;
-  background: var(--grad-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.priceCur {
-  font-family: var(--f-d);
-  font-weight: 500;
-  font-size: clamp(1.0625rem, 2.6vw, 1.375rem);
-  color: var(--gold);
-}
-
-.priceHint {
-  margin-top: 12px;
-  font-size: 0.8125rem;
-  color: var(--dim);
-}
-
-/* ── Ko'rsatkichlar: manbadagi `.num` qator uslubi ── */
-
-.statsSec {
-  position: relative;
-  z-index: 1;
-  padding: clamp(30px, 5vh, 50px) 0 0;
-}
-
-.statsIn {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-/* Manbadagi `.num` qatori faqat keng ustunda ishlagan — tor ekranda esa
-   yorliq va raqam bitta qatorga sig'maganda yorliq deyarli yo'q joyga
-   siqilib, matni kesilardi. Ustunli tartib bu muammoni butunlay yo'qotadi
-   va boshqa variantlarning statistika kartalari bilan bir tilda gapiradi. */
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--panel-line);
-  border-radius: 16px;
-  padding: 18px 20px;
-}
-
-.statLab {
-  color: var(--dim);
-  font-size: 0.875rem;
-}
-
-.statNum {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(1.375rem, 2.8vw, 1.75rem);
-  color: var(--gold);
-}
-
-/* ── Bo'limlar ── */
-
-.sec {
-  position: relative;
-  z-index: 1;
-  padding: clamp(52px, 9vh, 92px) 0 0;
-  scroll-margin-top: 80px;
-}
-
-.kicker {
-  color: var(--em);
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-}
-
-.h2 {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(1.9rem, 5vw, 2.75rem);
-  line-height: 1.08;
-  letter-spacing: -0.015em;
-  margin-top: 10px;
-}
-
-.secSub {
-  color: var(--dim);
-  font-size: 0.9688rem;
-  line-height: 1.65;
-  max-width: 52ch;
-  margin-top: 10px;
-}
-
-.secAct {
-  margin-top: clamp(24px, 3.4vw, 34px);
-}
-
-/* ── 3 qadam ── */
-
-.grid3 {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: clamp(26px, 4vw, 40px);
-}
-
-.sc {
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--panel-line);
-  border-radius: var(--r);
-  padding: clamp(24px, 3vw, 30px);
-  transition: transform 0.22s ease, border-color 0.22s ease;
-}
-
-.sc:hover {
-  transform: translateY(-5px);
-  border-color: var(--line);
-}
-
-.scNo {
-  display: block;
-  font-family: var(--f-d);
-  color: var(--gold);
-  font-size: 0.875rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 14px;
-}
-
-.scH {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: 1.1875rem;
-  margin-bottom: 8px;
-}
-
-.scP {
-  color: var(--dim);
-  font-size: 0.9375rem;
-  line-height: 1.62;
-}
-
-/* ── Mukofot kartalari ── */
-
-.rGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
-  margin-top: clamp(26px, 4vw, 40px);
-}
-
-.rCard {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 8px;
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--panel-line);
-  border-radius: var(--r);
-  padding: clamp(22px, 3vw, 28px);
-  transition: transform 0.22s ease, border-color 0.22s ease;
-}
-
-.rCard:hover {
-  transform: translateY(-5px);
-  border-color: var(--line);
-}
-
-/* Grand sovrin — oltin-zumrad gradient qatlam, doimiy nozik nur */
-.rCardHot {
-  background:
-    linear-gradient(140deg, rgba(16, 185, 129, 0.14), rgba(245, 194, 66, 0.08)),
-    var(--panel);
-  border-color: var(--line);
-  box-shadow: 0 0 0 1px rgba(245, 194, 66, 0.14), 0 20px 50px rgba(245, 194, 66, 0.1);
-}
-
-.rTag {
-  display: inline-block;
-  font-size: 0.75rem;
+.handCur {
+  font-size: 0.46em;
+  font-stretch: 100%;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--dim);
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.rCardHot .rTag {
-  color: #2a1e03;
-  background: var(--grad-gold);
-}
-
-.rTitle {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: 1.0625rem;
-}
-
-.rFig {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 10px;
-  margin-top: 2px;
-}
-
-.rNum {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(1.75rem, 4vw, 2.375rem);
-  line-height: 1;
-  color: transparent;
-  background: var(--grad-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.rUnit {
-  font-family: var(--f-d);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  color: var(--dim);
-}
-
-.rDesc {
-  color: var(--dim);
-  font-size: 0.9375rem;
-  line-height: 1.55;
-}
-
-/* ── FAQ: manbadagi native details, «+» → 45° ── */
-
-.faqList {
-  display: grid;
-  gap: 12px;
-  margin-top: clamp(24px, 4vw, 36px);
-  max-width: 720px;
-}
-
-.faqItem {
-  background: var(--panel);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--panel-line);
-  border-radius: 16px;
-  padding: 0 clamp(18px, 3vw, 22px);
-  transition: border-color 0.2s ease;
-}
-
-.faqItem[open] {
-  border-color: var(--line);
-}
-
-.faqQ {
-  cursor: pointer;
-  padding: 18px 0;
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: 1rem;
-  line-height: 1.3;
-  list-style: none;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  user-select: none;
-  -webkit-user-select: none;
-}
-
-.faqQ::-webkit-details-marker {
-  display: none;
-}
-
-.faqQ::marker {
-  content: '';
-}
-
-.faqQ::after {
-  content: '+';
-  flex: none;
-  font-family: var(--f-d);
-  color: var(--gold);
-  font-size: 1.375rem;
-  line-height: 1;
-  transition: transform 0.22s ease;
-}
-
-.faqItem[open] .faqQ::after {
-  transform: rotate(45deg);
-}
-
-.faqA {
-  color: var(--dim);
-  font-size: 0.9375rem;
-  line-height: 1.65;
-  max-width: 62ch;
-  padding-bottom: 20px;
-}
-
-.faqA a {
-  color: var(--gold);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.faqA a:hover {
-  color: var(--gold-l);
-}
-
-/* ── Yakuniy da'vat ── */
-
-.finaleWrap {
+.handNum {
   position: relative;
-  z-index: 1;
-  padding: clamp(56px, 9vh, 96px) clamp(18px, 4vw, 24px) clamp(52px, 8vh, 88px);
+  display: inline-block;
 }
 
-.finaleIn {
-  max-width: 800px;
-  padding: 0;
-  background:
-    linear-gradient(140deg, rgba(16, 185, 129, 0.16), rgba(245, 194, 66, 0.1)),
-    var(--panel);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--line);
-  border-radius: 28px;
-  padding: clamp(40px, 7vw, 64px) clamp(24px, 5vw, 40px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 16px;
-}
-
-.finH {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: clamp(1.9rem, 5.4vw, 2.75rem);
-  line-height: 1.1;
-  letter-spacing: -0.015em;
-  max-width: 20ch;
-}
-
-.finHl {
-  color: transparent;
-  background: linear-gradient(110deg, var(--gold-l), var(--gold) 50%, #e09b0c);
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.finP {
-  color: var(--dim);
-  font-size: 1rem;
-  line-height: 1.6;
-  max-width: 46ch;
-}
-
-.finList {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.finList li {
-  position: relative;
-  padding-left: 22px;
-  color: var(--dim);
-  font-size: 0.9375rem;
-}
-
-.finList li::before {
-  content: '';
+.ring {
   position: absolute;
-  left: 2px;
-  top: 0.4em;
-  width: 6px;
-  height: 11px;
-  border: solid var(--em);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
+  left: -0.16em;
+  top: -0.22em;
+  width: calc(100% + 0.32em);
+  height: calc(100% + 0.48em);
+  fill: none;
+  stroke: var(--marker);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  pointer-events: none;
 }
 
-.finAct {
-  margin-top: 6px;
+/* ── Pastdagi izoh ──
+   `.mid` skeletda markazlashtirilgan; bu yerda pastga bosiladi — yuqorisi
+   plakatga tegishli. */
+
+.page .mid {
+  justify-content: flex-end;
+  padding-bottom: 18px;
 }
 
-/* ── Footer ── */
-
-.foot {
-  position: relative;
-  z-index: 1;
-  border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding: clamp(28px, 4vh, 40px) 0 clamp(70px, 8vh, 86px);
+.hint {
+  font-size: 14.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 20em;
 }
 
-.footIn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
+/* ── Tugma ──
+   Oq plita: tungi parda ustida eng kuchli kontrast (ink oqda 15:1) va
+   rasmdagi ko'k bilan raqobatlashmaydi. */
 
-.footBrand {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.footLogo {
-  width: 36px;
-  height: 36px;
-}
-
-.footName {
-  font-family: var(--f-d);
-  font-weight: 700;
-  font-size: 1.0625rem;
-}
-
-.footNote {
-  color: var(--dim);
-  font-size: 0.875rem;
-  line-height: 1.55;
-  max-width: 52ch;
-}
-
-.footBot {
-  font-family: var(--f-d);
-  font-weight: 500;
-  font-size: 0.9375rem;
-  color: var(--gold);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-}
-
-.footBot:hover {
-  color: var(--gold-l);
-}
-
-/* ── Variant almashtirgich ── */
-/* 9 havola (1-8 + asl) tor ekranda pillga sig'maydi va box chapga
-   toshib ketardi. `max-width` uni viewport ichida ushlab turadi, ortiqcha
-   qolgan havolalar esa gorizontal surish bilan ko'rinadi. */
-
-.switcher {
-  position: fixed;
-  right: 14px;
-  bottom: 14px;
-  z-index: 40;
-  display: flex;
-  gap: 4px;
-  padding: 5px;
-  background: rgba(4, 17, 11, 0.85);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 999px;
-  max-width: calc(100vw - 28px);
-  overflow-x: auto;
-  scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
-}
-.switcher::-webkit-scrollbar {
-  display: none;
-}
-
-
-.switcher a {
-  display: grid;
-  place-items: center;
-  min-width: 30px;
-  height: 30px;
-  padding: 0 9px;
-  border-radius: 999px;
-  font-family: var(--f-d);
-  font-weight: 500;
-  font-size: 0.75rem;
-  color: var(--dim);
-  transition: color 0.15s ease, background-color 0.15s ease;
-}
-
-.switcher a:hover {
+.page .primary {
+  background: #fff;
   color: var(--ink);
-  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: 0 10px 30px rgba(8, 13, 20, 0.55);
 }
 
-.swOn,
-.switcher a.swOn,
-.switcher a.swOn:hover {
-  color: #2a1e03;
-  background: var(--grad-gold);
-}
-
-/* ══ Moslashuv ═══════════════════════════════════════════════════════ */
-
-@media (min-width: 900px) {
-  .heroIn {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
-  }
-
-  .hdrNav {
-    display: flex;
-  }
-}
-
-@media (max-width: 900px) {
-  .grid3,
-  .rGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .statsIn {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 760px) {
-  .grid3,
-  .rGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 640px) {
-  .hdrIn {
-    height: 60px;
-  }
-}
-
-@media (max-width: 380px) {
-  .brandName {
-    font-size: 0.9375rem;
-  }
-
-  .hdr .btnSm {
-    padding: 10px 14px;
-    font-size: 0.75rem;
-  }
-
-  .secAct .btnG,
-  .finAct .btnG {
-    width: 100%;
-    white-space: normal;
-    text-align: center;
-  }
+.page .note {
+  color: rgba(255, 255, 255, 0.7);
 }

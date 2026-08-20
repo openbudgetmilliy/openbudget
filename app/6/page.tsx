@@ -16,14 +16,15 @@ import c from './page.module.css';
  * Tuzilishi `/5` bilan bir xil (bitta ekran, skrollsiz, umumiy skelet), lekin
  * kadrni CSS emas, TAYYOR RASM yasaydi: `public/pul-sumkasi.webp` — pul
  * solingan yashil karta-sumka. Sahifaning butun ishi shu rasmni ekranga
- * to'g'ri joylash, ustiga narxni qo'lda yozish va pastga bitta tugma qo'yish.
+ * to'g'ri joylash, ustiga narxni yozish va pastga bitta tugma qo'yish.
  *
  * UCH QOIDA:
  *
  * 1. SARLAVHA YO'Q. «Open budjet boshlandi» va brend belgilari rasmning
  *    O'ZIDA. HTML header qo'shilsa logotip ikki marta chiqadi.
- * 2. QO'L YOZUVI FAQAT NARXDA. Caveat ikki qatorda ishlaydi, xolos; tugma
- *    va izoh bosma shriftda qoladi.
+ * 2. NARX BRENDNING TAGIDA. Rasmda logotip qatoridan keyin bo'sh ko'k zona
+ *    bor — narx o'sha yerga, plakatning o'z yozuvi bilan bir chiziqqa
+ *    tushadi. Shrift bosma (Archivo), chunki plakat sarlavhasi ham bosma.
  * 3. RASM KESILADI, LEKIN SUMKA KESILMAYDI. O'lchov `--pw` da — izohi
  *    `page.module.css` da.
  *
@@ -70,13 +71,13 @@ export default async function VariantPlakat() {
           decoding="async"
         />
 
-        {/* Rasmdagi bo'sh ko'k zona — sumka bilan logotip orasida */}
+        {/* Logotip qatorining tagidagi bo'sh ko'k zona */}
         <figcaption className={c.hand}>
           <span className={c.handTop}>har bir ovoz uchun</span>
           <span className={c.handSum}>
             <span className={c.handNum}>
               {s.price_one_vote}
-              {/* Marker halqasi — qo'lda aylantirilgandek, bir tekis emas */}
+              {/* Marker halqasi — qo'lda aylantirilgandek, ideal ellips emas */}
               <svg className={c.ring} viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden>
                 <path d="M186 16C160 5 96 2 46 9 10 14 4 34 22 46c24 15 102 17 152 8 19-4 26-13 14-22" />
               </svg>

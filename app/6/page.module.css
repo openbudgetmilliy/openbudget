@@ -38,7 +38,7 @@
 
 .page {
   --ad-sans: var(--f6-body);
-  --hand: var(--f6-hand), 'Segoe Script', cursive;
+  --display: var(--f6-display), 'Arial Narrow', sans-serif;
 
   --pw: min(max(min(100vw, 520px), 56.28dvh), 117vw);
 
@@ -111,54 +111,72 @@
   }
 }
 
-/* ── Qo'lda yozilgan narx ──
-   Rasmdagi bo'sh ko'k zona: logotip (9.6%) bilan pullar (39%) orasi. */
+/* ── Narx ──
+   O'rni: BRENDNING TAGIDA. Rasmdagi logotip qatori 16.7% da tugaydi,
+   pullar 39% dan boshlanadi — narx shu oraliqning yuqori chetiga, chapdagi
+   «Open budjet boshlandi» yozuvi bilan bir chiziqqa qo'yiladi (8.8% —
+   rasmdagi «OB» belgisining chap qirrasi). Shunda plakat bitta gap bo'lib
+   o'qiladi: brend → narx → pul.
+
+   Shrift bosma (Archivo), qo'l yozuvi emas: plakatning o'z sarlavhasi ham
+   bosma, ikkalasi bitta tilda gapirishi kerak. `wdth` o'qi ikkisini
+   ajratadi — yorliq keng va siyrak, raqam tor va qalin. */
 
 .hand {
   position: absolute;
   z-index: 2;
-  /* Bo'sh zona 18%..39% orasida; blok balandligi ~13%, shuning uchun 22% */
-  top: 22%;
-  left: 8%;
-  right: 8%;
+  top: 19%;
+  left: 12%;
+  /* Chapdagi kabi 12%: plakat ekrandan keng (kesilgan), shuning uchun
+     kichikroq qiymat blok qutisini ekrandan chiqarib yuborardi */
+  right: 12%;
   display: grid;
-  justify-items: center;
-  gap: calc(var(--pw) * 0.012);
-  font-family: var(--hand);
-  text-align: center;
-  /* Yozuv fon gradientining yorug' joyiga tushsa ham ajralib tursin */
-  text-shadow: 0 2px 16px rgba(0, 10, 22, 0.6);
+  justify-items: start;
+  gap: calc(var(--pw) * 0.016);
+  font-family: var(--display);
+  text-align: left;
+  /* Fon gradientining yorug' joyida ham ajralib tursin */
+  text-shadow: 0 2px 16px rgba(0, 10, 22, 0.55);
 }
 
+/* Yorliq ATAYIN 18.66px dan katta va 700 og'irlikda: shu ikki shart bilan
+   u WCAG bo'yicha «katta matn» hisoblanadi va kontrast chegarasi 4.5:1 dan
+   3:1 ga tushadi. `/7` da yorliqning o'ng uchi plakatning eng yorug' ko'k
+   joyiga (3.5:1) tegib turadi — kichikroq shriftda u qoidani buzardi. */
 .handTop {
-  font-size: calc(var(--pw) * 0.062);
-  font-weight: 500;
+  font-size: calc(var(--pw) * 0.048);
+  font-stretch: 108%;
+  font-weight: 700;
   line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: rgba(198, 222, 245, 0.92);
-  transform: rotate(-1.4deg);
 }
 
 .handSum {
   position: relative;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.18em;
-  font-size: calc(var(--pw) * 0.155);
-  font-weight: 700;
+  gap: 0.2em;
+  font-size: calc(var(--pw) * 0.145);
+  font-stretch: 88%;
+  font-weight: 800;
   line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
   color: #fff;
   white-space: nowrap;
-  transform: rotate(-1.8deg);
 }
 
 .handCur {
-  font-size: 0.54em;
-  font-weight: 500;
+  font-size: 0.46em;
+  font-stretch: 100%;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 /* Halqa FAQAT raqam atrofida: qo'lda ham summa aylantiriladi, o'lchov
-   birligi emas. `.handSum` ni to'liq o'rasa, chiziq «so'm» ustidan kesib
-   o'tardi. */
+   birligi emas. Bosma raqam + marker chizig'i = ko'chadagi e'lon. */
 .handNum {
   position: relative;
   display: inline-block;
@@ -166,10 +184,10 @@
 
 .ring {
   position: absolute;
-  left: -0.14em;
-  top: -0.16em;
-  width: calc(100% + 0.28em);
-  height: calc(100% + 0.34em);
+  left: -0.16em;
+  top: -0.22em;
+  width: calc(100% + 0.32em);
+  height: calc(100% + 0.48em);
   fill: none;
   stroke: var(--marker);
   stroke-width: 3.2;

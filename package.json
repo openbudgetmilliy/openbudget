@@ -17,6 +17,7 @@
     "gate:check": "tsx --env-file=.env scripts/check-gate.ts",
     "logos": "tsx scripts/build-logos.ts",
     "assets:home": "tsx scripts/build-home-assets.ts",
+    "assets:ad": "tsx scripts/build-ad-assets.ts",
     "postinstall": "prisma generate",
     "typecheck": "tsc --noEmit"
   },
