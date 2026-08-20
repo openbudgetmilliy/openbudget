@@ -20,7 +20,7 @@ export const CAMPAIGN = {
   /** Ovoz berish tugaydigan payt — Toshkent vaqti */
   deadline: '2026-08-30T23:59:00+05:00',
   /** Sarlavhalardagi yuqori chegara (`/8`) */
-  ceiling: '500 000 so‘mgacha',
+  ceiling: '100 000 so‘mgacha',
   /** Qo'shimcha sovrin (`/8`) */
   prize: 'iPhone 17 Pro Max',
 } as const;

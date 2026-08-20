@@ -1,0 +1,28 @@
+/* `/9` banknota — banknota ostidagi taymer */
+
+.cd {
+  align-self: stretch;
+  margin-top: clamp(36px, 7vh, 52px);
+}
+
+.cdCell {
+  padding: 6px 2px 5px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(77, 159, 255, 0.22);
+}
+
+.cdNum {
+  font-size: clamp(18px, 5.4vw, 22px);
+  color: #4d9fff;
+}
+
+.cdLab {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+@media (max-height: 700px) {
+  .cd {
+    margin-top: 32px;
+  }
+}

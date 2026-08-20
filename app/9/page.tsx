@@ -4,9 +4,11 @@ import BackgroundGate from '@/components/BackgroundGate';
 import MetaPixel from '@/components/MetaPixel';
 import Tracker from '@/components/Tracker';
 import Logo from '@/components/Logo';
+import BanknotaCountdown from '@/components/landing/BanknotaCountdown';
 import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, isOpen } from '@/lib/campaign';
 import { tgLink } from '@/lib/tg';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -31,8 +33,7 @@ import c from './page.module.css';
  * nomlari `v2_vote`, `v3_vote` … tarzida terilgan. `pul` deb qoldirilsa u
  * o'sha ro'yxatda yolg'iz, tushunarsiz qator bo'lib turardi.
  *
- * Kadrda taymer YO'Q — manbada ham yo'q edi. `/2`–`/8` dagi taymer bu
- * kompozitsiyaga qo'shilsa, bitta ekranga sig'ish sharti buzilardi.
+ * Kadrda taymer yo'q edi — keyinroq banknota ostiga qo'shildi.
  *
  * Sahifa to'liq statik (SSG).
  */
@@ -53,6 +54,8 @@ export const viewport: Viewport = {
 export default async function VariantBanknota() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
 
   return (
     <div className={`${c.screen} doc-night`}>
@@ -68,6 +71,14 @@ export default async function VariantBanknota() {
         </header>
 
         <div className={c.mid}>
+          <h1 className={c.title}>
+            Har bitta ovoz uchun
+            <br />
+            <b className={c.hl}>100 000 so‘m</b> gacha!
+          </h1>
+
+          <p className={c.sub}>Biz har bir ovoz uchun haqiqiy to‘lov qilamiz.</p>
+
           <img
             src="/banknota-100k.webp"
             alt=""
@@ -78,13 +89,7 @@ export default async function VariantBanknota() {
             className={c.note100}
           />
 
-          <h1 className={c.title}>
-            Har bitta ovoz uchun
-            <br />
-            <b className={c.hl}>100 000 so‘m</b> gacha!
-          </h1>
-
-          <p className={c.sub}>Faqat biz har bir ovoz uchun haqiqiy to‘lov qilamiz.</p>
+          {open ? <BanknotaCountdown initial={left} /> : null}
         </div>
 
         <div className={c.cta}>

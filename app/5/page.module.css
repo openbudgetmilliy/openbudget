@@ -168,27 +168,31 @@
   color: #fff;
 }
 
-/* ── Strelka ──
-   Kreativda kartochkadan tugmaga ishora qiladi. O'ngda, chunki chapda
-   kartochkaning salat soyasi turadi. */
+/* ── Kartochka va tugma orasi — taymer markazda ── */
+
+.between {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  position: relative;
+}
 
 .arrow {
-  /* Ortiqcha bo'shliq SHU YERDA yig'iladi, tugma ustida emas: kreativda
-     strelka tugmaga ishora qiladi va unga yaqin turadi. `auto` `.cta` da
-     bo'lganda strelka kartochkaga yopishib, tugmagacha 400px bo'sh joy
-     qolardi. */
-  margin-top: auto;
-  align-self: flex-end;
+  position: absolute;
+  right: clamp(4px, 4vw, 22px);
+  bottom: clamp(2px, 1vh, 8px);
   width: clamp(40px, 12vw, 58px);
   height: auto;
-  margin-right: clamp(4px, 4vw, 22px);
-  margin-bottom: clamp(2px, 1vh, 8px);
   fill: none;
   stroke: #fff;
   stroke-width: 7;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0.92;
+  pointer-events: none;
 }
 
 /* ── Pastki harakat zonasi ── */
@@ -226,11 +230,8 @@
    ekranda allaqachon ikkita salat plita bor va uchinchisi ortiqcha. */
 
 .cd {
-  margin-top: 0;
-}
-
-.cdTop {
-  margin-bottom: clamp(10px, 2.5vh, 18px);
+  margin: 0;
+  width: 100%;
 }
 
 .cdCell {

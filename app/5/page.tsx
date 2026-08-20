@@ -73,19 +73,6 @@ export default async function VariantStiker() {
       <div className={c.glow} aria-hidden />
 
       <div className={c.wrap}>
-        {open ? (
-          <Countdown
-            initial={left}
-            lead=""
-            classes={{
-              root: `${c.cd} ${c.cdTop}`,
-              cell: c.cdCell,
-              num: c.cdNum,
-              lab: c.cdLab,
-            }}
-          />
-        ) : null}
-
         {/* Stiker ATAYIN qiyshiq va matndan kengroq: u yopishtirilgan
             qog'oz taassurotini beradi, bosilgan sarlavha emas */}
         <p className={c.sticker}>
@@ -111,7 +98,21 @@ export default async function VariantStiker() {
           </a>
         </div>
 
-        <Arrow />
+        <div className={c.between}>
+          {open ? (
+            <Countdown
+              initial={left}
+              lead=""
+              classes={{
+                root: c.cd,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+              }}
+            />
+          ) : null}
+          <Arrow />
+        </div>
 
         <div className={c.cta}>
           <a href={tg} className={c.btn} data-t="cta" data-t-id="v5_vote" data-tg rel="noopener">
