@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
-import { PAYOUT, PAYOUT_STEPS } from '@/lib/payout';
+import { price, priceSteps } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -29,7 +32,7 @@ import c from './page.module.css';
  * tanlovini bloklardi. `defaultChecked` esa HTML'ga `checked` atributini
  * yozadi-yu, keyin brauzerga to'liq erkinlik beradi.
  *
- * Summalar `lib/payout.ts` da bir marta hisoblanadi — asosiy sahifa bilan
+ * Summalar `lib/payout.ts` da `price_one_vote` sozlamasidan hisoblanadi — asosiy sahifa bilan
  * bitta manba.
  */
 export const revalidate = 60;
@@ -49,6 +52,9 @@ export const viewport: Viewport = {
 export default async function VariantHisob() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
+  const steps = priceSteps(s);
 
   return (
     <div className={`${a.screen} ${c.page} doc-paper`}>
@@ -57,7 +63,7 @@ export default async function VariantHisob() {
       <div className={a.wrap}>
         {/* Radiolar `.mid` DAN OLDIN turishi shart — CSS ularni
             umumiy-birodar (`~`) selektori bilan topadi */}
-        {PAYOUT_STEPS.map((step, i) => (
+        {steps.map((step, i) => (
           <input
             key={step.votes}
             className={c.r}
@@ -83,7 +89,7 @@ export default async function VariantHisob() {
           <p className={c.lab}>Siz olasiz</p>
 
           <p className={c.disp}>
-            {PAYOUT_STEPS.map((step, i) => (
+            {steps.map((step, i) => (
               <span key={step.votes} className={`${c.num} ${c[`n${i}`]}`}>
                 {step.sum}
               </span>
@@ -93,14 +99,14 @@ export default async function VariantHisob() {
 
           <p className={c.calc}>
             <b>
-              {PAYOUT_STEPS.map((step, i) => (
+              {steps.map((step, i) => (
                 <span key={step.votes} className={`${c.cnt} ${c[`c${i}`]}`}>
                   {step.votes}
                 </span>
               ))}{' '}
               ta ovoz
             </b>{' '}
-            × {PAYOUT} so‘m
+            × {price(s)} so‘m
           </p>
 
           <div className={c.bar} aria-hidden>
@@ -109,7 +115,7 @@ export default async function VariantHisob() {
 
           <p className={c.hint}>Nechta ovoz berasiz?</p>
           <div className={c.seg}>
-            {PAYOUT_STEPS.map((step, i) => (
+            {steps.map((step, i) => (
               <label key={step.votes} htmlFor={`hisob-${i}`} className={c[`seg${i}`]}>
                 {step.votes}
                 <small>ovoz</small>
@@ -154,8 +160,29 @@ export default async function VariantHisob() {
             Pulni olish
           </a>
           <p className={`${a.note} ${c.note}`}>To‘lov Uzcard yoki Humo kartaga tushadi</p>
+          {open ? (
+            <Countdown
+              initial={left}
+              /* Sarlavhasiz va izohsiz: bitta ekranli kadrda har piksel
+                 hisobda. Kataklar ostidagi kun/soat/daq/son yorlig'i vaqtni
+                 o'zi tushuntiradi; aniq sana `/1` va `/6`–`/8` da qoladi. */
+              lead=""
+
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/4" />
 
       <Tracker />
     </div>

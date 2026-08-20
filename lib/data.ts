@@ -13,19 +13,19 @@ import { env } from './env';
 
 export const DEFAULT_SETTINGS = {
   bot_username: env.BOT,
-  hero_badge: '',
   /**
-   * `{narx}` — o'rin egallovchi. Landing render paytida `price_one_vote`
-   * qiymatiga almashadi, ya'ni narx BITTA joyda o'zgartiriladi
-   * (`/admin/prices`), matnlarni qayta yozish shart emas.
+   * BIR OVOZ NARXI — barcha landing sahifalari uchun yagona manba.
+   *
+   * `/`, `/1`–`/9`, `/l` shu qiymatni `lib/payout.ts` orqali o'qiydi, ya'ni
+   * bu maydon o'zgarsa narx hamma sahifada birdek o'zgaradi. Matnlardagi
+   * `{narx}` o'rin egallovchisi ham shu yerdan to'ldiriladi.
+   *
+   * Format erkin — «30 000», «30000» yoki «30 000 so'm» ham bo'ladi:
+   * `lib/payout.ts` faqat raqamlarni oladi va guruhlab qayta chizadi.
    */
   price_one_vote: '30 000',
 
-  hero_title: 'Ovoz bering — pul ishlab oling!',
-  hero_sub: "Faqat biz har bir ovoz uchun haqiqiy to'lov qilamiz.",
-  cta_primary: 'Botda ovoz olish',
   tg_channel: 'openbudget_uz',
-  support_username: 'openbudget_help',
   reviews_count: '8 000+',
 } as const;
 

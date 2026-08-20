@@ -1,5 +1,6 @@
 import 'server-only';
 import { revalidatePath } from 'next/cache';
+import { LANDING_PATHS } from './landings';
 import { env } from './env';
 
 /**
@@ -51,10 +52,16 @@ export async function purgeCloudflare(urls: string[]): Promise<boolean> {
  * ro'yxatda va u DARHOL yangilanishi kerak — narx eski qolgan bosh sahifa
  * eng qimmatga tushadigan xato.
  */
-const LANDING_PATHS = ['/', '/l', '/1', '/2', '/3', '/4', '/5', '/6', '/7', '/8', '/9'];
+// Ro'yxat `lib/landings.ts` da — admin paneldagi jadval bilan bitta manba
+
 
 export async function refreshLanding(): Promise<{ isr: true; cf: boolean }> {
   for (const path of LANDING_PATHS) revalidatePath(path);
+
+  // 404 sahifasidagi tugma ham sozlamadagi botga ketadi (`app/not-found.tsx`),
+  // lekin u marshrut emas — Next uni `/_not-found` segmenti deb ataydi.
+  // Usiz bot almashganda 404 eski manzilda qolib ketardi.
+  revalidatePath('/_not-found');
 
   const cf = await purgeCloudflare([
     // Ildiz ikki ko'rinishda ham purge qilinadi — CF ularni alohida

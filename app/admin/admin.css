@@ -418,6 +418,11 @@ table.a-t {
 }
 
 .a-bar-f {
+  /* `display` MAJBURIY: `.a-bar-f` — `<span>`, ya'ni inline element, va
+     inline elementda `width`/`height` umuman ishlamaydi. Usiz barcha
+     diagrammalar (voronka, kreativlar, sahifalar) bo'sh chiziq bo'lib
+     ko'rinardi — track bor, to'ldiruvchi yo'q. */
+  display: block;
   height: 100%;
   border-radius: 999px;
   background: linear-gradient(90deg, #2aabee, #7fd0f7);

@@ -1,23 +1,24 @@
-import { Inter, Orbitron } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 
 /**
- * Variant 8 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas.
+ * Variant 8 shriftlari — ATAYIN shu marshrutda, `app/fonts.ts` da emas:
+ * u yerdagi oila BARCHA sahifalarga preload bo'lib tushardi.
  *
- * `app/fonts.ts` root layout'ga ulangan: u yerga qo'shilgan har bir oila
- * BARCHA sahifalarga (jumladan `/l` va darvozaga) preload bo'lib tushardi.
- * Asosiy landing bitta Archivo bilan yashaydi, shuning uchun bu ikki oila
- * faqat `/8` so'ralganda yuklanadi.
+ *   Space Grotesk — sarlavhalar va raqamlar. Grotesk qurilishi, lekin
+ *                   harflari kvadratroq va «a» bir qavatli: to'q fonda
+ *                   neon gradient bilan aynan shu oila ishlaydi.
+ *   Inter         — o'qish matni, yorliqlar, mayda qatorlar.
  */
 const body = Inter({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['400', '500', '600', '700'],
   variable: '--f8-body',
   display: 'swap',
 });
 
-const display = Orbitron({
+const display = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['600', '800'],
+  weight: ['500', '700'],
   variable: '--f8-display',
   display: 'swap',
 });

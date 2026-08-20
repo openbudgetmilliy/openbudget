@@ -3,19 +3,38 @@
 import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
+/**
+ * IKKI MAYDON, BOSHQA HECH NARSA.
+ *
+ * Ilgari bu yerda to'qqizta kalit bor edi — sarlavha, tavsif, tugma matni,
+ * kanal, yordam akkaunti, mijozlar soni. Ularning ko'pi endi hech qayerda
+ * ko'rinmaydi: sahifalar o'z matnini o'zi olib yuradi, chunki har bir
+ * reklama ekrani alohida yozilgan kadr.
+ *
+ * Qolgan ikkitasi esa haqiqatan HAMMA sahifaga ta'sir qiladi:
+ *   narx    — `/`, `/2`–`/8` da ko'rsatiladigan raqam
+ *   bot     — o'sha sahifalardagi har bir tugma qayerga olib borishi
+ *
+ * Yangi maydon qo'shishdan oldin o'ylang: agar u faqat bitta sahifada
+ * ko'rinsa, uning o'rni sozlamalarda emas, o'sha sahifaning kodida.
+ */
 const LABELS: Record<string, string> = {
-  bot_username: 'Bot username (@ siz)',
-  price_one_vote: '1 ovoz narxi ({narx} o‘rniga qo‘yiladi)',
-  hero_badge: 'Yuqori yozuv (sarlavha ustida)',
-  hero_title: 'Sarlavha',
-  hero_sub: 'Tavsif (sarlavha ostida)',
-  cta_primary: 'Tugma matni',
-  tg_channel: 'Telegram kanal (@ siz)',
-  support_username: 'Yordam akkaunti (@ siz)',
-  reviews_count: 'Mijozlar soni',
+  price_one_vote: '1 ovoz narxi — barcha sahifada',
+  bot_username: 'Bot havolasi yoki username',
 };
 
-const LONG = new Set(['hero_sub', 'hero_title']);
+const LONG = new Set<string>();
+
+/**
+ * Ikki maydon butun saytga ta'sir qiladi, shuning uchun ular tagida izoh
+ * turadi: bu yerni o'zgartirgan odam natijani oldindan bilishi kerak.
+ */
+const HINTS: Record<string, string> = {
+  bot_username:
+    'Telegramdan nusxa olingan to‘liq havola ham bo‘ladi: https://t.me/BotNomi yoki @BotNomi. Barcha sahifadagi tugmalar shu manzilga ketadi.',
+  price_one_vote:
+    'Bitta raqam — `/` va `/2`–`/8` ning hammasida shu ko‘rinadi. «30 000» ham, «30000» ham bo‘laveradi.',
+};
 
 export default function SettingsForm({ values }: { values: Record<string, string> }) {
   const router = useRouter();
@@ -24,14 +43,14 @@ export default function SettingsForm({ values }: { values: Record<string, string
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
 
-  const dirty = Object.keys(draft).some((k) => draft[k] !== values[k]);
+  const dirty = Object.keys(LABELS).some((k) => draft[k] !== values[k]);
 
   async function save() {
     setBusy(true);
     setMsg(null);
     try {
       const changed = Object.fromEntries(
-        Object.entries(draft).filter(([k, v]) => v !== values[k]),
+        Object.entries(draft).filter(([k, v]) => k in LABELS && v !== values[k]),
       );
       const res = await fetch('/api/admin/settings', {
         method: 'PATCH',
@@ -91,6 +110,11 @@ export default function SettingsForm({ values }: { values: Record<string, string
                   disabled={busy}
                   onChange={(e) => setDraft({ ...draft, [k]: e.target.value })}
                 />
+              )}
+              {HINTS[k] && (
+                <p style={{ fontSize: 12, color: '#59637a', marginTop: 6, lineHeight: 1.55 }}>
+                  {HINTS[k]}
+                </p>
               )}
             </div>
           ))}

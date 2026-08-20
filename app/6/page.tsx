@@ -1,10 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
-import { tgLink } from '@/lib/tg';
+import { campaignLeft, deadlineLabel, isOpen } from '@/lib/campaign';
+import { price } from '@/lib/payout';
+import { tgLink, tgUsername } from '@/lib/tg';
 import { env } from '@/lib/env';
 
 import a from '@/components/landing/adscreen.module.css';
@@ -28,10 +32,10 @@ import c from './page.module.css';
  * 3. RASM KESILADI, LEKIN SUMKA KESILMAYDI. O'lchov `--pw` da — izohi
  *    `page.module.css` da.
  *
- * Narx `price_one_vote` sozlamasidan keladi (standart qiymat «30 000»), ya'ni
- * uni admin panelidan o'zgartirish mumkin. Bu sahifa `lib/payout.ts` dagi
- * to'lov raqamiga BOG'LIQ EMAS: u yerdagi 20 000 asosiy sahifadagi banknota
- * rasmiga bog'langan, bu yerdagi rasmda esa banknota nominali ko'rsatilmagan.
+ * Narx `price_one_vote` sozlamasidan keladi (`lib/payout.ts`), ya'ni uni
+ * admin panelidan o'zgartirish mumkin va o'zgarish barcha sahifada birdek
+ * ko'rinadi. Bu yerdagi rasmda banknota nominali yo'q — shuning uchun narx
+ * qanday bo'lsa ham rasm bilan ziddiyat chiqmaydi.
  *
  * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
  */
@@ -51,8 +55,13 @@ export const viewport: Viewport = {
 
 export default async function VariantPlakat() {
   const s = await getSettings();
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
-  const tg = tgLink(bot, 'web');
+  // `tgLink` XOM sozlamani oladi: unda to'liq havola bo'lsa (`?start=…`)
+  // undagi tamg'a saqlanib qolsin. `tgUsername` faqat ekranga chiqadigan
+  // «@bot» yozuvi uchun.
+  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
+  const bot = tgUsername(s.bot_username || env.BOT);
 
   return (
     <div className={`${a.screen} ${c.page} doc-ob`}>
@@ -75,7 +84,7 @@ export default async function VariantPlakat() {
         <figcaption className={c.hand}>
           <span className={c.handTop}>har bir ovoz uchun</span>
           <span className={c.handSum}>
-            <span>{s.price_one_vote}</span>
+            <span>{price(s)}</span>
             <span className={c.handCur}>so‘m</span>
           </span>
         </figcaption>
@@ -99,8 +108,25 @@ export default async function VariantPlakat() {
             Ovoz berish
           </a>
           <p className={`${a.note} ${c.note}`}>Telegramda ochiladi · @{bot}</p>
+          {open ? (
+            <Countdown
+              initial={left}
+              note={`Muddat ${deadlineLabel()} da tugaydi`}
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/6" />
 
       <Tracker />
     </div>

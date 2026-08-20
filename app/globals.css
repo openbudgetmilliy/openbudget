@@ -523,7 +523,7 @@ body:has(.oltin-dark) {
   background: #222c3f;
 }
 
-/* A/B reklama ekranlari (`/2`–`/6`) — o'sha sabab, o'sha usul.
+/* A/B reklama ekranlari (`/2`–`/8`) — o'sha sabab, o'sha usul.
    Har biri o'z fonini oladi, chunki CSS `:has()` ichidan qiymat o'qiy
    olmaydi: rangni selektorning o'zi olib keladi. */
 
@@ -542,9 +542,15 @@ body:has(.doc-ob) {
   background: #001426;
 }
 
+html:root:has(.doc-neon),
+body:has(.doc-neon) {
+  background: #05060c;
+}
+
 html:root:has(.doc-blue),
 html:root:has(.doc-navy),
-html:root:has(.doc-ob) {
+html:root:has(.doc-ob),
+html:root:has(.doc-neon) {
   color-scheme: dark;
 }
 

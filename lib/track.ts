@@ -214,19 +214,40 @@ export function initTracking(): void {
     { passive: true },
   );
 
-  // ── Chiqish ──
+  /* ── Chiqish va sahifada o'tkazilgan vaqt ──
+     `dwellMs` — sahifa KO'RINIB turgan vaqt, sahifa ochilganidan beri
+     o'tgan vaqt emas.
+
+     Ilgari u `Date.now() - started` edi. Odam tabni tashlab ketib bir
+     soatdan keyin qaytsa, o'sha bir soat ham «sahifada turgan vaqt»ga
+     qo'shilardi — prod ma'lumotida bu o'rtachani 29 daqiqaga ko'targan
+     edi. Endi tab yashiringanda hisob TO'XTAYDI, qaytganda davom etadi. */
+  let visibleMs = 0;
+  let since = document.visibilityState === 'hidden' ? 0 : Date.now();
   let closed = false;
+
   const bye = () => {
     if (closed) return;
     closed = true;
-    track({ type: 'exit', dwellMs: Date.now() - started });
+    if (since) {
+      visibleMs += Date.now() - since;
+      since = 0;
+    }
+    track({ type: 'exit', dwellMs: visibleMs });
     flush();
   };
+
   addEventListener('pagehide', bye);
   addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') bye();
-    else closed = false; // qaytib kelsa yana kuzatamiz
+    if (document.visibilityState === 'hidden') {
+      bye();
+    } else {
+      // Qaytib kelsa yana kuzatamiz — lekin yo'qolgan vaqt sanalmaydi
+      closed = false;
+      since = Date.now();
+    }
   });
+
 
   setInterval(flush, INTERVAL);
 }

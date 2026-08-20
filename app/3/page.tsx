@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
-import { PAYOUT } from '@/lib/payout';
+import { price } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -48,6 +51,8 @@ export const viewport: Viewport = {
 export default async function VariantKarta() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
 
   return (
     <div className={`${a.screen} ${c.page} doc-navy`}>
@@ -67,7 +72,7 @@ export default async function VariantKarta() {
         <div className={a.mid}>
           <div className={c.stage}>
             <span className={c.drop} aria-hidden>
-              +{PAYOUT} so‘m
+              +{price(s)} so‘m
             </span>
 
             <div className={c.card}>
@@ -78,7 +83,7 @@ export default async function VariantKarta() {
 
               <div>
                 <p className={`${c.cAmt} tnum`}>
-                  {PAYOUT}
+                  {price(s)}
                   <span>so‘m</span>
                 </p>
                 <p className={c.cLab}>har bir ovoz uchun</p>
@@ -132,8 +137,29 @@ export default async function VariantKarta() {
             Pulni olish
           </a>
           <p className={`${a.note} ${c.note}`}>Komissiyasiz · 2 daqiqada</p>
+          {open ? (
+            <Countdown
+              initial={left}
+              /* Sarlavhasiz va izohsiz: bitta ekranli kadrda har piksel
+                 hisobda. Kataklar ostidagi kun/soat/daq/son yorlig'i vaqtni
+                 o'zi tushuntiradi; aniq sana `/1` va `/6`–`/8` da qoladi. */
+              lead=""
+
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/3" />
 
       <Tracker />
     </div>

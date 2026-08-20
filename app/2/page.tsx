@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
-import { PAYOUT } from '@/lib/payout';
+import { price } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -20,7 +23,7 @@ import c from './page.module.css';
  * bosgan odam uchun bitta qaror.
  *
  * Nima qayerdan keladi:
- *   summa    — `lib/payout.ts` (asosiy sahifa bilan bitta manba)
+ *   summa    — `lib/payout.ts` → `price_one_vote` sozlamasi (bitta manba)
  *   bot      — `tgLink()`, admin sozlamasidagi `bot_username`
  *   sarlavha — SHU VARIANTGA XOS. A/B sinovining ma'nosi shunda: matn ham
  *              dizayn bilan birga sinaladi, shuning uchun u sozlamadan
@@ -46,6 +49,8 @@ export const viewport: Viewport = {
 export default async function VariantMoviy() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
 
   return (
     <div className={`${a.screen} ${c.page} doc-blue`}>
@@ -73,7 +78,7 @@ export default async function VariantMoviy() {
           </p>
 
           <div className={c.sticker}>
-            <p className={c.sNum}>{PAYOUT}</p>
+            <p className={c.sNum}>{price(s)}</p>
             <p className={c.sLab}>so‘m / har bir ovoz</p>
           </div>
 
@@ -110,8 +115,29 @@ export default async function VariantMoviy() {
           <p className={`${a.note} ${c.note}`}>
             Ro‘yxatdan o‘tish shart emas — Telegram yetarli
           </p>
+          {open ? (
+            <Countdown
+              initial={left}
+              /* Sarlavhasiz va izohsiz: bitta ekranli kadrda har piksel
+                 hisobda. Kataklar ostidagi kun/soat/daq/son yorlig'i vaqtni
+                 o'zi tushuntiradi; aniq sana `/1` va `/6`–`/8` da qoladi. */
+              lead=""
+
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/2" />
 
       <Tracker />
     </div>

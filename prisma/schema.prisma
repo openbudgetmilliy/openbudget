@@ -73,6 +73,9 @@ model Event {
   @@index([type, ts])
   @@index([sessionId])
   @@index([elId, ts])
+  // Sahifalar kesimidagi statistika (`landingPages`, `topButtons`) shu
+  // ustun bo'yicha guruhlaydi — indekssiz har so'rov butun jadvalni skanlardi
+  @@index([page, ts])
 }
 
 // ── Lead (forma bo'lsa) ──

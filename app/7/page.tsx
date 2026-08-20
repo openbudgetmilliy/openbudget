@@ -1,9 +1,13 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, deadlineLabel, isOpen } from '@/lib/campaign';
+import { price } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -23,11 +27,10 @@ import c from './page.module.css';
  * HTML'da takrorlash plakatni ikki marta aytishga olib kelardi — natijada
  * na rasm, na matn o'qilardi.
  *
- * NARX MANBASI — `price_one_vote` (admin sozlamasi, bugun «30 000»), ya'ni
- * bir ovozning botdagi SOTUV narxi. Bu ATAYIN `lib/payout.ts` dagi `PAYOUT`
- * emas: u odam OLADIGAN summa (20 000) va boshqa gapni aytadi. Narx admin
- * panelida o'zgarsa, plakatdagi qo'lyozma ham o'sha kuni o'zgaradi —
- * shuning uchun u shu yerda raqam bilan yozib qo'yilmagan.
+ * NARX MANBASI — `lib/payout.ts` → `price_one_vote` admin sozlamasi.
+ * Barcha landing sahifalari shu bitta maydondan o'qiydi, shuning uchun narx
+ * admin panelida o'zgarsa, plakatdagi qo'lyozma ham o'sha kuni o'zgaradi va
+ * boshqa variantlar bilan hech qachon ziddiyatga tushmaydi.
  *
  * Sahifa to'liq statik (SSG); yagona client kod — Tracker.
  */
@@ -48,6 +51,8 @@ export const viewport: Viewport = {
 export default async function VariantPlakat() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
 
   return (
     <div className={`${a.screen} ${c.page} doc-navy`}>
@@ -65,7 +70,7 @@ export default async function VariantPlakat() {
         <p className={c.hand}>
           <span className={c.handTop}>har bir ovoz uchun</span>
           <span className={c.handSum}>
-            <span>{s.price_one_vote}</span>
+            <span>{price(s)}</span>
             <span className={c.handCur}>so‘m</span>
           </span>
         </p>
@@ -86,8 +91,25 @@ export default async function VariantPlakat() {
             Botga o‘tish
           </a>
           <p className={`${a.note} ${c.note}`}>{s.reviews_count} kishi allaqachon qatnashdi</p>
+          {open ? (
+            <Countdown
+              initial={left}
+              note={`Muddat ${deadlineLabel()} da tugaydi`}
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/7" />
 
       <Tracker />
     </div>

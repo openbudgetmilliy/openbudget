@@ -1,6 +1,7 @@
 import type { Viewport } from 'next';
 
 import Oltin from '@/components/landing/Oltin';
+import MetaPixel from '@/components/MetaPixel';
 import BackgroundGate from '@/components/BackgroundGate';
 
 import { getSettings } from '@/lib/data';
@@ -46,6 +47,7 @@ export default async function Home() {
   return (
     <>
       <Oltin s={s} />
+      <MetaPixel path="/" />
 
       {/* Kalitlar qo'yilmagan bo'lsa (`GATE_ON` false) — umuman chiqmaydi */}
       {/* `corner="top"` — bu sahifa bitta ekran: pastda CTA tugmalari

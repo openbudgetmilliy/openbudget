@@ -330,3 +330,48 @@
     animation: none;
   }
 }
+
+/* ── Taymer ──
+   Kataklar kartaning materialidan: to'q shisha, nozik oq chegara.
+   Raqam yashil (`--ok`) — sahifadagi to'lov rangi bilan bir xil,
+   ya'ni «vaqt» ham «pul» bilan bog'lanadi. */
+
+.cd {
+  margin-top: 14px;
+}
+
+.cdLead {
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.cdCell {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+}
+
+.cdNum {
+  color: var(--ok);
+}
+
+.cdLab {
+  font-family: var(--mono);
+  color: var(--dim);
+}
+
+.cdNote {
+  font-family: var(--mono);
+  color: var(--dim);
+}
+
+/* Bitta ekranli kadr uchun ixcham o'lchov — skeletnikidan past */
+.cdCell {
+  padding: 7px 2px 5px;
+}
+
+.cdNum {
+  font-size: clamp(19px, 5.7vw, 23px);
+}

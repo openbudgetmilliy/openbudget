@@ -1,6 +1,8 @@
 import DbDown from '@/components/admin/DbDown';
+import LandingTable from '@/components/admin/LandingTable';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
-import { breakdown, creatives, scrollFunnel, topButtons } from '@/lib/stats';
+import { breakdown, creatives, landingPages, scrollFunnel, topButtons } from '@/lib/stats';
+import { landingName } from '@/lib/landings';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Analitika' };
@@ -14,7 +16,8 @@ export default async function AnalyticsPage({
 
   let d;
   try {
-    const [cre, btns, scroll, device, browser, os, source] = await Promise.all([
+    const [pages, cre, btns, scroll, device, browser, os, source] = await Promise.all([
+      landingPages(hours),
       creatives(hours),
       topButtons(hours),
       scrollFunnel(hours),
@@ -23,7 +26,7 @@ export default async function AnalyticsPage({
       breakdown('os', hours),
       breakdown('utmSource', hours),
     ]);
-    d = { cre, btns, scroll, device, browser, os, source };
+    d = { pages, cre, btns, scroll, device, browser, os, source };
   } catch (err) {
     return (
       <>
@@ -39,11 +42,14 @@ export default async function AnalyticsPage({
   return (
     <>
       <h1 className="a-h1">Analitika</h1>
-      <p className="a-sub">Qaysi kreativ pul olib kelayotganini shu yerda ko’rasiz</p>
+      <p className="a-sub">Qaysi sahifa va qaysi kreativ pul olib kelayotganini shu yerda ko’rasiz</p>
 
       <div className="a-row">
         <RangePicker base="/admin/analytics" hours={hours} />
       </div>
+
+      {/* Har sahifa alohida reklama qilinadi — havolasi ham, raqami ham shu yerda */}
+      <LandingTable rows={d.pages} />
 
       {/* ── Kreativlar ── */}
       <div className="a-panel">
@@ -103,12 +109,18 @@ export default async function AnalyticsPage({
       <div className="a-grid-2">
         {/* ── Tugmalar ── */}
         <div className="a-panel">
-          <div className="a-panel-h">Tugmalar reytingi</div>
+          <div className="a-panel-h">
+            <span>Tugmalar reytingi</span>
+            <span style={{ fontSize: 12.5, fontWeight: 400, color: '#59637a' }}>
+              sahifa + tugma kesimida
+            </span>
+          </div>
           {d.btns.length ? (
             <div className="a-tw">
               <table className="a-t">
                 <thead>
                   <tr>
+                    <th>Sahifa</th>
                     <th>Tugma</th>
                     <th>Matn</th>
                     <th className="num">Bosish</th>
@@ -117,7 +129,8 @@ export default async function AnalyticsPage({
                 </thead>
                 <tbody>
                   {d.btns.map((b, i) => (
-                    <tr key={`${b.elId}-${i}`}>
+                    <tr key={`${b.page}-${b.elId}-${i}`}>
+                      <td className="muted">{landingName(b.page)}</td>
                       <td>
                         <span className="a-tag">{b.elId ?? '—'}</span>
                       </td>

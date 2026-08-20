@@ -1,5 +1,29 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /**
+   * O'CHIRILGAN VARIANTLAR — eski reklama havolalari o'lmasin.
+   *
+   * `/1`, `/9` va `/l` olib tashlandi. Lekin ular reklama kabinetlarida,
+   * Instagram bio'sida va odamlarning saqlangan havolalarida qolib ketgan
+   * bo'lishi mumkin — `/l` esa o'chirilgunga qadar ENG KO'P trafik olgan
+   * sahifa edi (34 kirish). Ular 404 bersa, o'sha trafik shunchaki
+   * yo'qolardi.
+   *
+   * `permanent: false` (307) ATAYIN: 301 brauzerda abadiy keshlanadi va
+   * ertaga `/l` ni qaytarmoqchi bo'lsak, eski tashrifchilarda baribir
+   * yo'naltirish ishlab turardi.
+   *
+   * So'rov qatori (`?utm_source=…`) Next tomonidan O'ZI ko'chiriladi, ya'ni
+   * statistika va Meta tamg'alari yo'qolmaydi.
+   */
+  async redirects() {
+    return [
+      { source: '/1', destination: '/', permanent: false },
+      { source: '/9', destination: '/', permanent: false },
+      { source: '/l', destination: '/', permanent: false },
+    ];
+  },
+
   // PM2 + nginx uchun: node_modules'siz ishlaydigan bundle
   output: 'standalone',
 

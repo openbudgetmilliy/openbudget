@@ -283,3 +283,32 @@
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
   }
 }
+
+/* ── Aksiya taymeri ──
+   Raqamlar OQ, oltin emas — bu ATAYIN. Sahifaning ikki rang qoidasi
+   bo'yicha oltin faqat harakat va urg'uga tegishli (yorliq, asosiy tugma,
+   qalqon). Taymer esa ma'lumot: u tugmani chalg'itmasligi kerak.
+
+   Kataklar deyarli ko'rinmas — nozik chiziq va bir oz yorug' fon; suv
+   belgisi ustida ham ular bir tekis chiqadi. */
+
+.cd {
+  margin-top: 16px;
+}
+
+.cdCell {
+  padding: 7px 2px 5px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cdNum {
+  font-size: clamp(19px, 5.6vw, 23px);
+  color: var(--ink);
+}
+
+.cdLab {
+  color: var(--ink-2);
+  opacity: 0.82;
+}

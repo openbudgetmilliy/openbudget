@@ -1,11 +1,14 @@
 import type { Metadata, Viewport } from 'next';
 
 import Tracker from '@/components/Tracker';
+import MetaPixel from '@/components/MetaPixel';
+import Countdown from '@/components/landing/Countdown';
 import Logo from '@/components/Logo';
 
 import { getSettings } from '@/lib/data';
+import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
-import { PAYOUT } from '@/lib/payout';
+import { price } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -76,6 +79,8 @@ function Tick() {
 export default async function VariantQolyozma() {
   const s = await getSettings();
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
+  const open = isOpen();
 
   return (
     <div className={`${a.screen} ${c.page} doc-note`}>
@@ -98,7 +103,7 @@ export default async function VariantQolyozma() {
             Ovoz ber —
             <br />
             <span className={c.ring}>
-              {PAYOUT}
+              {price(s)}
               <svg viewBox="0 0 200 60" preserveAspectRatio="none" aria-hidden>
                 <path d="M186 16C160 5 96 2 46 9 10 14 4 34 22 46c24 15 102 17 152 8 17-3 24-11 15-20-8-8-38-13-80-13" />
               </svg>
@@ -115,7 +120,7 @@ export default async function VariantQolyozma() {
             <span className={`${c.tape} ${c.t1}`} aria-hidden />
             <span className={`${c.tape} ${c.t2}`} aria-hidden />
             <p className={c.tT}>Bir ovoz uchun</p>
-            <p className={`${c.tN} tnum`}>+{PAYOUT} so‘m</p>
+            <p className={`${c.tN} tnum`}>+{price(s)} so‘m</p>
             <p className={c.tS}>Uzcard yoki Humo kartaga</p>
           </div>
 
@@ -161,8 +166,29 @@ export default async function VariantQolyozma() {
             Pulni olish
           </a>
           <p className={`${a.note} ${c.note}`}>{s.reviews_count} kishi allaqachon oldi</p>
+          {open ? (
+            <Countdown
+              initial={left}
+              /* Sarlavhasiz va izohsiz: bitta ekranli kadrda har piksel
+                 hisobda. Kataklar ostidagi kun/soat/daq/son yorlig'i vaqtni
+                 o'zi tushuntiradi; aniq sana `/1` va `/6`–`/8` da qoladi. */
+              lead=""
+
+              classes={{
+                root: c.cd,
+                lead: c.cdLead,
+                grid: c.cdGrid,
+                cell: c.cdCell,
+                num: c.cdNum,
+                lab: c.cdLab,
+                note: c.cdNote,
+              }}
+            />
+          ) : null}
         </div>
       </div>
+
+      <MetaPixel path="/5" />
 
       <Tracker />
     </div>

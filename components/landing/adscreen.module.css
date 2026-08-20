@@ -8,9 +8,11 @@
 
    Uch qoida:
 
-   1. BITTA EKRAN. `.mid` cho'ziladi, `.cta` esa pastdan 5vh chekinadi —
-      tugmalar ekranning pastki uchdan birida, bosh barmoq yetadigan
-      zonada qoladi va brauzer panetiga yopishib qolmaydi.
+   1. BITTA EKRAN. `.mid` cho'ziladi, `.cta` esa pastdan chekinadi —
+      tugmalar bosh barmoq yetadigan zonada qoladi va brauzer panetiga
+      yopishib qolmaydi. Chekinish `clamp` da: baland ekranda 26px,
+      past ekranda 12px gacha tushadi — aks holda 568px li telefonda
+      pastdagi taymer kadrdan chiqib ketardi.
    2. BARMOQ ZONASI 60px. Apple/Google tavsiyasidan (44/48px) ancha katta:
       reklama trafigi shoshib bosadi.
    3. RADIUS QO'LDA. `globals.css` da `* { border-radius: 0 }` reseti bor,
@@ -70,7 +72,7 @@
 .cta {
   display: grid;
   gap: 12px;
-  padding-bottom: 5vh;
+  padding-bottom: clamp(12px, 3vh, 26px);
 }
 
 .btn {

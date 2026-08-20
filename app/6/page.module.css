@@ -215,3 +215,40 @@
   /* Bot nomi tor ekranda uzilib ketmasin */
   word-break: break-word;
 }
+
+/* ── Taymer ──
+   Plakat ustida turadi, shuning uchun kataklar shishasimon: to'q shaffof
+   fon + nozik oq chegara. Raqam oq, yorliq esa yumshoqroq — sumkaning
+   yashili bilan raqobatlashmasin. Pastki qorayish (`.scrim`) allaqachon
+   shu zonani tunga aylantirgan, ya'ni kontrast yetadi. */
+
+.cd {
+  margin-top: 12px;
+}
+
+.cdLead {
+  color: rgba(206, 226, 248, 0.72);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cdCell {
+  border-radius: 12px;
+  background: rgba(3, 18, 34, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.cdNum {
+  font-family: var(--display);
+  font-stretch: 88%;
+  color: #fff;
+}
+
+.cdLab {
+  color: rgba(206, 226, 248, 0.7);
+}
+
+.cdNote {
+  color: rgba(206, 226, 248, 0.72);
+}

@@ -203,3 +203,38 @@
 .page .note {
   color: rgba(255, 255, 255, 0.7);
 }
+
+/* ── Taymer ──
+   Pastdagi parda bu zonani allaqachon tunga aylantirgan; kataklar shu
+   tunning ichida — deyarli ko'rinmas chegara, oq raqam. Shrift plakat
+   bilan bir xil (Montserrat). */
+
+.cd {
+  margin-top: 12px;
+}
+
+.cdLead {
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.cdCell {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cdNum {
+  font-family: var(--display);
+  color: #fff;
+}
+
+.cdLab {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.cdNote {
+  color: rgba(255, 255, 255, 0.62);
+}

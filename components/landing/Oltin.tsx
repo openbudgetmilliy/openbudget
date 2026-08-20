@@ -1,9 +1,11 @@
 import { Manrope } from 'next/font/google';
 
 import Tracker from '@/components/Tracker';
+import Countdown from '@/components/landing/Countdown';
 
 import type { Settings } from '@/lib/data';
-import { PAYOUT } from '@/lib/payout';
+import { campaignLeft, isOpen } from '@/lib/campaign';
+import { price } from '@/lib/payout';
 import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
@@ -59,6 +61,7 @@ const BRAND = 'OpenBudget';
 
 export default function Oltin({ s }: { s: Settings }) {
   const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const left = campaignLeft();
 
   return (
     /* `oltin-dark` — global klass: `globals.css` shu orqali `html`/`body`
@@ -92,7 +95,7 @@ export default function Oltin({ s }: { s: Settings }) {
           <p className={st.badge}>FAOL OVOZ BERISH</p>
           <h1 className={st.h1}>Ovoz bering, pul oling</h1>
           <p className={st.sub}>
-            Har bir ovoz uchun <b className={st.subSum}>{PAYOUT} so‘m</b> oling — mahallangizdagi
+            Har bir ovoz uchun <b className={st.subSum}>{price(s)} so‘m</b> oling — mahallangizdagi
             suv, yo‘l va qurilishga hissa qo‘shing.
           </p>
         </div>
@@ -100,10 +103,16 @@ export default function Oltin({ s }: { s: Settings }) {
         <div className={st.gap} aria-hidden />
 
         {/* Banknota — sahifadagi eng katta rasm va LCP nomzodi, shuning
-            uchun `fetchPriority="high"`: brauzer uni birinchi so'raydi. */}
+            uchun `fetchPriority="high"`: brauzer uni birinchi so'raydi.
+
+            DIQQAT: manba rasm 20 000 so'mlik banknota. Matndagi narx admin
+            sozlamasidan keladi, rasm esa yo'q — sozlamada boshqa nominal
+            qo'yilsa `assets/yigirma-ming.jpg` ni almashtirib
+            `npm run assets:home` ni qayta ishlatish kerak. Shuning uchun
+            `alt` da summa yo'q: rasm bezak, da'vo emas. */}
         <img
           src="/yigirma-ming.webp"
-          alt={`${PAYOUT} so‘mlik banknota`}
+          alt="So‘m banknotalari"
           width={654}
           height={305}
           className={st.money}
@@ -143,6 +152,19 @@ export default function Oltin({ s }: { s: Settings }) {
             Pulni olish
           </a>
         </div>
+
+        {/* Aksiya muddati — ekranning eng pastida. Ikkita `.gap` cho'zuvchi
+            bo'sh joyni yutgani uchun kompozitsiya siljimaydi: taymer
+            o'sha bo'shliqning bir qismini oladi, xolos. */}
+        {isOpen() ? (
+          <Countdown
+            initial={left}
+            /* Sarlavhasiz: bitta ekranli kadrda joy tor, kataklar ostidagi
+               kun/soat/daq/son yorlig'i vaqtni o'zi tushuntiradi */
+            lead=""
+            classes={{ root: st.cd, cell: st.cdCell, num: st.cdNum, lab: st.cdLab }}
+          />
+        ) : null}
       </div>
 
       <Tracker />

@@ -324,3 +324,46 @@
     display: none;
   }
 }
+
+/* ── Taymer ──
+   Segment tugmalari bilan bir xil material (oq kartochka, `--rule`
+   chegara) — ekrandagi hamma quti bitta oiladan. Raqam to'q siyoh,
+   yorliq esa daftar ohangida. */
+
+.cd {
+  margin-top: 16px;
+}
+
+.cdLead {
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dim);
+}
+
+.cdCell {
+  border-radius: 10px;
+  background: var(--card);
+  border: 1.5px solid var(--rule);
+}
+
+.cdNum {
+  color: var(--ink);
+}
+
+.cdLab {
+  color: var(--dim);
+}
+
+.cdNote {
+  color: var(--dim);
+}
+
+/* Bitta ekranli kadr uchun ixcham o'lchov — skeletnikidan past */
+.cdCell {
+  padding: 7px 2px 5px;
+}
+
+.cdNum {
+  font-size: clamp(19px, 5.7vw, 23px);
+}

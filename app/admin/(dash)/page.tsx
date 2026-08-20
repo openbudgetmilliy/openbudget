@@ -1,8 +1,10 @@
 import AutoRefresh from '@/components/admin/AutoRefresh';
 import DbDown from '@/components/admin/DbDown';
+import LandingTable from '@/components/admin/LandingTable';
 import RangePicker, { parseHours } from '@/components/admin/RangePicker';
 import TrafficChart from '@/components/admin/TrafficChart';
-import { hourly, onlineNow, overview, recentCta, scrollFunnel } from '@/lib/stats';
+import { hourly, landingPages, onlineNow, overview, recentCta, scrollFunnel } from '@/lib/stats';
+import { landingName } from '@/lib/landings';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Dashboard' };
@@ -16,14 +18,15 @@ export default async function Dashboard({
 
   let data;
   try {
-    const [ov, online, hrs, cta, scroll] = await Promise.all([
+    const [ov, online, hrs, cta, scroll, pages] = await Promise.all([
       overview(hours),
       onlineNow(),
       hourly(hours),
       recentCta(12),
       scrollFunnel(hours),
+      landingPages(hours),
     ]);
-    data = { ov, online, hrs, cta, scroll };
+    data = { ov, online, hrs, cta, scroll, pages };
   } catch (err) {
     return (
       <>
@@ -33,7 +36,7 @@ export default async function Dashboard({
     );
   }
 
-  const { ov, online, hrs, cta, scroll } = data;
+  const { ov, online, hrs, cta, scroll, pages } = data;
   const maxScroll = Math.max(...scroll.map((s) => s.users), 1);
 
   return (
@@ -83,6 +86,10 @@ export default async function Dashboard({
         </div>
       </div>
 
+      {/* Analitikaning ASOSIY jadvali: har sahifa alohida reklama qilinadi,
+          shuning uchun birinchi savol — qaysi sahifa qancha olib keldi */}
+      <LandingTable rows={pages} showLinks={false} />
+
       <div className="a-panel">
         <div className="a-panel-h">Soatlar bo’yicha trafik</div>
         <div className="a-panel-b">
@@ -99,6 +106,7 @@ export default async function Dashboard({
                 <thead>
                   <tr>
                     <th>Vaqt</th>
+                    <th>Sahifa</th>
                     <th>Tugma</th>
                     <th>Kreativ</th>
                     <th>Qurilma</th>
@@ -113,6 +121,7 @@ export default async function Dashboard({
                           minute: '2-digit',
                         })}
                       </td>
+                      <td className="muted">{landingName(c.page)}</td>
                       <td>
                         <span className="a-tag">{c.elId ?? '—'}</span>
                       </td>
