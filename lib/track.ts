@@ -153,7 +153,15 @@ function stampTelegramLinks(): void {
     try {
       const u = new URL(a.href);
       const base = u.searchParams.get('start') || 'web';
-      u.searchParams.set('start', `${base}-${tag}`.slice(0, 64));
+      // Ajratgich `__` (ikki pastki chiziq) — bir emas.
+      //
+      // Referal ham (`dilnura`), tamg'a ham (`instagram-v5_01`) ichida `-`
+      // bo'lishi mumkin. Bitta `-` bilan ajratilganda bot referalni tamg'adan
+      // ishonchli ajrata olmasdi: `dilnura-instagram-v5_01` ni qayerdan
+      // bo'lish kerakligi noma'lum edi. `__` esa ikkala qismda ham
+      // uchramaydi, ya'ni bot tomonida qoida bitta qator:
+      //     referral = start.split('__')[0]
+      u.searchParams.set('start', `${base}__${tag}`.slice(0, 64));
       a.href = u.toString();
     } catch {
       /* jim */
