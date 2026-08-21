@@ -18,10 +18,13 @@
  * Oxirgi qator muhim: havolada `start` bo'lsa u SAQLANADI — reklama
  * kabinetidan berilgan tamg'ani sahifa o'chirib yubormasligi kerak.
  *
- * SSG sahifa foydalanuvchining UTM'ini bilmaydi, shuning uchun server
- * bazaviy `start` qiymatini qo'yadi. Sahifa yuklangach `lib/track.ts`
- * ichidagi `stampTelegramLinks()` uning ustiga UTM tamg'asini qo'shadi.
- * JS ishlamasa ham havola ishlaydi.
+ * HAVOLA BRAUZERDA O'ZGARMAYDI. Ilgari `lib/track.ts` uning ustiga UTM
+ * tamg'asini qo'shardi (`?start=dilnura__instagram-v5_01`), lekin bot
+ * referalni aynan taqqoslagani uchun reklamadan kelganlar hisobga
+ * tushmay qoldi. Endi tugmada nima yozilgan bo'lsa, botga o'sha boradi.
+ *
+ * Qaysi kadrdan kelgani `/admin` statistikasida ko'rinadi — u UTM'ni
+ * sahifa manzilidan o'qiydi, havoladan emas.
  */
 
 /** Telegram username qoidasi: harf/raqam/pastki chiziq, 5–32 belgi */

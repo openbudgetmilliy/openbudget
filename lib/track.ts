@@ -138,36 +138,27 @@ export function track(e: Ev): void {
  * Natijada botda ham qaysi paket, ham qaysi kreativ ko'rinadi.
  * Telegram start param: A-Za-z0-9_- va maks. 64 belgi.
  */
-function stampTelegramLinks(): void {
-  const p = new URLSearchParams(location.search);
-  const src = p.get('utm_source') || (/instagram/i.test(document.referrer) ? 'ig' : '');
-  const creative = p.get('utm_content') || p.get('utm_campaign') || '';
-  const tag = [src, creative]
-    .filter(Boolean)
-    .join('-')
-    .replace(/[^a-zA-Z0-9_-]/g, '')
-    .slice(0, 40);
-  if (!tag) return;
-
-  document.querySelectorAll<HTMLAnchorElement>('a[data-tg]').forEach((a) => {
-    try {
-      const u = new URL(a.href);
-      const base = u.searchParams.get('start') || 'web';
-      // Ajratgich `__` (ikki pastki chiziq) — bir emas.
-      //
-      // Referal ham (`dilnura`), tamg'a ham (`instagram-v5_01`) ichida `-`
-      // bo'lishi mumkin. Bitta `-` bilan ajratilganda bot referalni tamg'adan
-      // ishonchli ajrata olmasdi: `dilnura-instagram-v5_01` ni qayerdan
-      // bo'lish kerakligi noma'lum edi. `__` esa ikkala qismda ham
-      // uchramaydi, ya'ni bot tomonida qoida bitta qator:
-      //     referral = start.split('__')[0]
-      u.searchParams.set('start', `${base}__${tag}`.slice(0, 64));
-      a.href = u.toString();
-    } catch {
-      /* jim */
-    }
-  });
-}
+/**
+ * TELEGRAM HAVOLASI TEGILMAYDI — bu ATAYIN.
+ *
+ * Ilgari bu yerda `stampTelegramLinks()` turardi: sahifa yuklangach u
+ * tugmadagi `?start=` ga UTM tamg'asini qo'shar edi, ya'ni
+ * `?start=dilnura` → `?start=dilnura__instagram-v5_01`.
+ *
+ * Nima uchun olib tashlandi: bot referalni AYNAN taqqoslaydi. Suffiks
+ * qo'shilganda reklamadan kelgan odamlar bot hisobiga tushmay qoldi —
+ * faqat UTM'siz kirgan bir nechtasi sanaldi. Tamg'ani bot tomonida ajratish
+ * mumkin edi, lekin bu bot kodini o'zgartirishni talab qilardi; sayt
+ * tomonidan tamg'ani umuman qo'ymaslik xavfsizroq va soddaroq.
+ *
+ * SAYT ANALITIKASIGA TA'SIRI YO'Q. `meta()` UTM'ni SAHIFA MANZILIDAN
+ * (`location.search`) o'qiydi va `/api/e` ga alohida yuboradi — Telegram
+ * havolasidan emas. Ya'ni qaysi kadr va qaysi kreativ ishlagani `/admin`
+ * da baribir ko'rinadi; faqat BOT o'zi buni bilmaydi.
+ *
+ * Qayta qo'shmoqchi bo'lsangiz: avval bot referalni qanday taqqoslashini
+ * tekshiring.
+ */
 
 export function initTracking(): void {
   if (inited || typeof window === 'undefined') return;
@@ -180,7 +171,6 @@ export function initTracking(): void {
     /* jim */
   }
 
-  stampTelegramLinks();
   track({ type: 'view' });
 
   // ── Klik (delegation) ──
