@@ -5,6 +5,7 @@ import MetaPixel from '@/components/MetaPixel';
 import BackgroundGate from '@/components/BackgroundGate';
 
 import { getSettings } from '@/lib/data';
+import { botLinkFor } from '@/lib/botlinks';
 import { SITE } from '@/lib/content';
 import { env, GATE_ON } from '@/lib/env';
 
@@ -43,10 +44,11 @@ export const viewport: Viewport = {
 
 export default async function Home() {
   const s = await getSettings();
+  const tg = await botLinkFor('/', s.bot_username);
 
   return (
     <>
-      <Oltin s={s} />
+      <Oltin s={s} tg={tg} />
       <MetaPixel path="/" />
 
       {/* Kalitlar qo'yilmagan bo'lsa (`GATE_ON` false) — umuman chiqmaydi */}

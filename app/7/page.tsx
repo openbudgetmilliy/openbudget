@@ -8,7 +8,7 @@ import { Telegram } from '@/components/Icons';
 import { getSettings } from '@/lib/data';
 import { campaignLeft, deadlineLabel, isOpen } from '@/lib/campaign';
 import { price } from '@/lib/payout';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
 import { env } from '@/lib/env';
 
 import a from '@/components/landing/adscreen.module.css';
@@ -50,7 +50,7 @@ export const viewport: Viewport = {
 
 export default async function VariantPlakat() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/7', s.bot_username);
   const left = campaignLeft();
   const open = isOpen();
 

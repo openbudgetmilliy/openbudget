@@ -8,7 +8,8 @@ import { Telegram } from '@/components/Icons';
 import { getSettings } from '@/lib/data';
 import { campaignLeft, isOpen } from '@/lib/campaign';
 import { price } from '@/lib/payout';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
+import { tgUsername } from '@/lib/tg';
 import { env } from '@/lib/env';
 
 import c from './page.module.css';
@@ -62,8 +63,10 @@ function Arrow() {
 
 export default async function VariantStiker() {
   const s = await getSettings();
-  const bot = (s.bot_username || env.BOT).replace(/^@/, '');
-  const tg = tgLink(bot, 'web');
+  const tg = await botLinkFor('/5', s.bot_username);
+  // Kartochkada ko'rinadigan manzil TUGMA BILAN BIR XIL bo'lishi shart —
+  // shuning uchun u hisoblangan havoladan olinadi, sozlamadan emas
+  const bot = tgUsername(tg);
   const left = campaignLeft();
   const open = isOpen();
 

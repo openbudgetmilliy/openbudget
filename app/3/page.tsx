@@ -9,7 +9,7 @@ import { getSettings } from '@/lib/data';
 import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
 import { price } from '@/lib/payout';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
 import { env } from '@/lib/env';
 
 import a from '@/components/landing/adscreen.module.css';
@@ -50,7 +50,7 @@ export const viewport: Viewport = {
 
 export default async function VariantKarta() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/3', s.bot_username);
   const left = campaignLeft();
   const open = isOpen();
 

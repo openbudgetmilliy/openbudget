@@ -6,7 +6,6 @@ import Countdown from '@/components/landing/Countdown';
 import type { Settings } from '@/lib/data';
 import { campaignLeft, isOpen } from '@/lib/campaign';
 import { price } from '@/lib/payout';
-import { tgLink } from '@/lib/tg';
 import { env } from '@/lib/env';
 
 import st from './Oltin.module.css';
@@ -59,8 +58,14 @@ const manrope = Manrope({ subsets: ['latin'], variable: '--f-oltin', display: 's
 const BRAND = 'OpenBudget';
 
 
-export default function Oltin({ s }: { s: Settings }) {
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+/**
+ * `tg` — TASHQARIDAN beriladi, ichkarida hisoblanmaydi.
+ *
+ * Sabab: havola endi sahifaga qarab o'zgaradi (`lib/botlinks.ts`) va uni
+ * olish uchun bazaga murojaat kerak. Oltin esa `/` va boshqa joyda ham
+ * chizilishi mumkin bo'lgan sof komponent — bazani u bilmasligi kerak.
+ */
+export default function Oltin({ s, tg }: { s: Settings; tg: string }) {
   const left = campaignLeft();
 
   return (

@@ -9,7 +9,7 @@ import { Telegram } from '@/components/Icons';
 
 import { getSettings } from '@/lib/data';
 import { campaignLeft, isOpen } from '@/lib/campaign';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
 import { env, GATE_ON } from '@/lib/env';
 
 import c from './page.module.css';
@@ -53,7 +53,7 @@ export const viewport: Viewport = {
 
 export default async function VariantBanknota() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/9', s.bot_username);
   const left = campaignLeft();
   const open = isOpen();
 

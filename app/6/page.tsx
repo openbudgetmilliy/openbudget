@@ -8,7 +8,8 @@ import { Telegram } from '@/components/Icons';
 import { getSettings } from '@/lib/data';
 import { campaignLeft, deadlineLabel, isOpen } from '@/lib/campaign';
 import { price } from '@/lib/payout';
-import { tgLink, tgUsername } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
+import { tgUsername } from '@/lib/tg';
 import { env } from '@/lib/env';
 
 import a from '@/components/landing/adscreen.module.css';
@@ -55,13 +56,12 @@ export const viewport: Viewport = {
 
 export default async function VariantPlakat() {
   const s = await getSettings();
-  // `tgLink` XOM sozlamani oladi: unda to'liq havola bo'lsa (`?start=…`)
-  // undagi tamg'a saqlanib qolsin. `tgUsername` faqat ekranga chiqadigan
-  // «@bot» yozuvi uchun.
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/6', s.bot_username);
   const left = campaignLeft();
   const open = isOpen();
-  const bot = tgUsername(s.bot_username || env.BOT);
+  // Ekrandagi «@bot» TUGMA BILAN BIR XIL bo'lishi shart — shuning uchun u
+  // xom sozlamadan emas, hisoblangan havoladan olinadi
+  const bot = tgUsername(tg);
 
   return (
     <div className={`${a.screen} ${c.page} doc-ob`}>

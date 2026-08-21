@@ -19,6 +19,13 @@ const ALLOWED = new Set(Object.keys(DEFAULT_SETTINGS));
  */
 const PIXEL_KEYS = new Set(LANDINGS.map((l) => `pixel_${l.slug}`));
 
+/**
+ * Sahifa bot havolalari (`bot_main`, `bot_v3` …). `bot_username` bilan
+ * ADASHTIRMASLIK kerak: u umumiy sozlama va `DEFAULT_SETTINGS` da bor,
+ * bular esa har sahifaga tegishli va standart qiymati yo'q.
+ */
+const BOT_KEYS = new Set(LANDINGS.map((l) => `bot_${l.slug}`));
+
 /** Bo'sh qiymat ham to'g'ri: pixelni o'chirish shunday qilinadi */
 function pixelOk(v: string): boolean {
   return v.trim() === '' || validPixel(v);
@@ -31,7 +38,7 @@ export async function GET(): Promise<Response> {
   const rows = await prisma.setting.findMany();
   const values: Record<string, string> = { ...DEFAULT_SETTINGS };
   for (const r of rows) values[r.key] = r.value;
-  return Response.json({ ok: true, values, keys: [...ALLOWED, ...PIXEL_KEYS] });
+  return Response.json({ ok: true, values, keys: [...ALLOWED, ...PIXEL_KEYS, ...BOT_KEYS] });
 }
 
 export async function PATCH(req: Request): Promise<Response> {
@@ -45,7 +52,8 @@ export async function PATCH(req: Request): Promise<Response> {
   }
 
   const entries = Object.entries(body as Record<string, unknown>).filter(
-    ([k, v]) => typeof v === 'string' && (ALLOWED.has(k) || PIXEL_KEYS.has(k)),
+    ([k, v]) =>
+      typeof v === 'string' && (ALLOWED.has(k) || PIXEL_KEYS.has(k) || BOT_KEYS.has(k)),
   ) as [string, string][];
 
   // Noto'g'ri pixel ID jim saqlanib qolmasin — aks holda sahifa Meta'ga

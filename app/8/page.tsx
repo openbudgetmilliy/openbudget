@@ -10,7 +10,7 @@ import { getSettings } from '@/lib/data';
 import { CAMPAIGN, campaignLeft, deadlineLabel } from '@/lib/campaign';
 import { liveStats } from '@/lib/landing-sections';
 import { SITE } from '@/lib/content';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
 import { env } from '@/lib/env';
 
 import c from './page.module.css';
@@ -74,7 +74,7 @@ function Arrow() {
 
 export default async function VariantNeon() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/8', s.bot_username);
   const bot = (s.bot_username || env.BOT).replace(/^@/, '');
 
   /* Server tomonidagi boshlang'ich qiymat — client'ning birinchi renderi

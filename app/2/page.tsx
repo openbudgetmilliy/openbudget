@@ -9,7 +9,7 @@ import { getSettings } from '@/lib/data';
 import { campaignLeft, isOpen } from '@/lib/campaign';
 import { SITE } from '@/lib/content';
 import { price } from '@/lib/payout';
-import { tgLink } from '@/lib/tg';
+import { botLinkFor } from '@/lib/botlinks';
 import { env } from '@/lib/env';
 
 import a from '@/components/landing/adscreen.module.css';
@@ -24,7 +24,7 @@ import c from './page.module.css';
  *
  * Nima qayerdan keladi:
  *   summa    — `lib/payout.ts` → `price_one_vote` sozlamasi (bitta manba)
- *   bot      — `tgLink()`, admin sozlamasidagi `bot_username`
+ *   bot      — `botLinkFor()`: sahifaning o'z havolasi, bo'lmasa umumiy
  *   sarlavha — SHU VARIANTGA XOS. A/B sinovining ma'nosi shunda: matn ham
  *              dizayn bilan birga sinaladi, shuning uchun u sozlamadan
  *              olinmaydi.
@@ -48,7 +48,7 @@ export const viewport: Viewport = {
 
 export default async function VariantMoviy() {
   const s = await getSettings();
-  const tg = tgLink(s.bot_username || env.BOT, 'web');
+  const tg = await botLinkFor('/2', s.bot_username);
   const left = campaignLeft();
   const open = isOpen();
 
